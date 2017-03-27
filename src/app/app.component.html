@@ -1,3 +1,10 @@
 <h1>
   {{title}}
-</h1>
+  </h1>
+  <kypo-menu
+  (selectDataset)="onSelectDataset($event)">
+  </kypo-menu>
+
+  <viz-view
+  [gameId]="selectedGame"></viz-view>
+

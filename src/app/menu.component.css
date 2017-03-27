@@ -1,0 +1,14 @@
+ul li {
+    color: blue;
+    font-size: 15px;
+}
+
+.wrapper {
+    float: left;
+    min-width: 150px;
+    padding: 10px;
+    background-color: lightblue;
+    /*min-height: 500px;*/
+    margin-right: 20px;
+
+}

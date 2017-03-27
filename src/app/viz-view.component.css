@@ -1,0 +1,7 @@
+.wrapper {
+    background-color: lightgoldenrodyellow;
+    float: left;
+    padding: 30px;
+    min-width: 65%; 
+    min-height: 400px;
+}

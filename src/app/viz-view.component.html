@@ -1,0 +1,10 @@
+
+<div class="wrapper">
+    <h3>Viz view component</h3>
+    Selected game: <b>{{gameId}}</b>
+
+    <h2>events</h2>
+    <p *ngFor="let event of events">{{event.ID}}, {{event.timestamp}},{{event.logical_time}},{{event.level}}, {{event.event}},{{event.game_instance_id}}</p>
+
+</div>
+

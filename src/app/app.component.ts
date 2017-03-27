@@ -5,6 +5,15 @@ import { Component } from '@angular/core';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
+
 export class AppComponent {
-  title = 'app works!';
+  title = 'Kypo vizualization main component';
+  selectedGame = 'none';
+
+  onSelectDataset(game) {
+    if(game != '' && game != 'none' && game != null) {
+          console.log("Parent component received " + game);
+          this.selectedGame = game;
+    }
+  }
 }
