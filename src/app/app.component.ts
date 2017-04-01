@@ -12,7 +12,7 @@ export class AppComponent {
 
   onSelectDataset(game) {
     if(game != '' && game != 'none' && game != null) {
-          console.log("Parent component received " + game);
+          // console.log("Parent component received " + game);
           this.selectedGame = game;
     }
   }

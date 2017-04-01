@@ -1,0 +1,16 @@
+.menu-wrapper {
+    float: left;
+    min-width: 150px;
+    padding: 10px;
+    background-color: lightblue;
+    /*min-height: 500px;*/
+    margin-right: 20px;
+}
+
+.viz-wrapper {
+    background-color: lightgoldenrodyellow;
+    float: left;
+    padding: 30px;
+    min-width: 65%; 
+    min-height: 400px;
+}

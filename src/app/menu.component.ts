@@ -17,13 +17,13 @@ export class MenuComponent {
 
     ngOnInit() {
         this.eventsService.getGames().subscribe(games => {
-            console.log(games);
+            // console.log(games);
             this.games = games;
         });
     }
 
     onClick(game) {
-        console.log(game);
+        // console.log(game);
         this.selectDataset.emit(game);
     }
 }
