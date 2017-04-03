@@ -7,12 +7,14 @@ import { AppComponent } from './app.component';
 import { MenuComponent } from './menu.component';
 import { EventsService } from './events.service';
 import { VizViewComponent } from './viz-view.component';
+import { ChartComponent } from './chart/chart.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     MenuComponent,
-    VizViewComponent
+    VizViewComponent,
+    ChartComponent
   ],
   imports: [
     BrowserModule,
