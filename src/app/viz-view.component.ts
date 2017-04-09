@@ -2,7 +2,7 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { EventsService } from './events.service'
 
-import * as d3 from 'd3';
+import * as negate from 'lodash.negate';
 
 @Component({
   selector: 'viz-view',
@@ -20,14 +20,54 @@ export class VizViewComponent {
     change="big";
 
     private flags = {
-        showGameStarts: true,
-        showGameFinishes: true,
-        showCorrectFlags: true,
-        showHints: true,
-        showWrongFlags: true,
-        showLevelSkips: true,
-        showPrematureExits: true,
-        showHelpLevelEvents: true
+        gameStarts: {
+            show: true,
+            comparator: function (event) {
+                return event.event === "Game started";
+            }
+        },
+        gameFinishes: {
+            show: true,
+            comparator: function (event) {
+                return event.event === "Game finished";
+            }
+        },
+        correctFlags: {
+            show: true,
+            comparator: function (event) {
+                return event.event === "Correct flag submited";
+            }
+        },
+        hints: {
+            show: true,
+            comparator: function (event) {
+                return event.event.indexOf("Hint") != -1 ;
+            }
+        },
+        wrongFlags: {
+            show: true,
+            comparator: function (event) {
+                return event.event.indexOf("Wrong flag submited") != -1 ;
+            }
+        },
+        levelSkips: {
+            show: true,
+            comparator: function (event) {
+                return event.event === "Level cowardly skipped" ;
+            }
+        },
+        prematureExits: {
+            show: true,
+            comparator: function (event) {
+                return event.event === "Game exited prematurely" ;
+            }
+        },
+        helpLevelEvents: {
+            show: true,
+            comparator: function (event) {
+                return event.event.toLowerCase().indexOf("help level") != -1;
+            }
+        }
     };
 
     constructor(private eventsService:EventsService) {}
@@ -40,14 +80,28 @@ export class VizViewComponent {
         console.log("Changing filter!");
         console.log(JSON.stringify(this.flags, null, 2));
 
+        this.change = "small";
+        this.filteredDataset = this.originalDataset;
+
+        Object.keys(this.flags).forEach( (flag => {
+            if(this.flags[flag].show === false) {
+                this.filteredDataset = this.filteredDataset.filter(negate(this.flags[flag].comparator));
+            }
+        }));
+
+        // if(this.flags.gameStarts.show === false) {
+        //     this.change = "small";
+        //     this.filteredDataset = this.filteredDataset.filter(negate(this.flags.gameStarts.comparator));
+        // }
+
         // MOCK DEMO IMPLEMENTATION
-        if(this.flags.showWrongFlags === false) {
-            this.change = "small";
-            this.filteredDataset = this.originalDataset.filter(x => x.event.toLowerCase().indexOf("wrong flag") === -1);
-        } else {
-            this.change = "small";
-            this.filteredDataset = this.originalDataset;
-        }
+        // if(this.flags.showWrongFlags === false) {
+        //     this.change = "small";
+        //     this.filteredDataset = this.originalDataset.filter(x => x.event.toLowerCase().indexOf("wrong flag") === -1);
+        // } else {
+        //     this.change = "small";
+        //     this.filteredDataset = this.originalDataset;
+        // }
     }
 
 
@@ -65,3 +119,6 @@ export class VizViewComponent {
     }
 }
 
+function not(x) {
+    return !x;
+}

@@ -19,43 +19,43 @@
                     Level lines
                 </label> 
                 <label>
-                    <input type="checkbox" class="event-toggle" value="started" [(ngModel)]="flags.showGameStarts" (change)="changeFilter()" name="showGameStarts"/>
+                    <input type="checkbox" class="event-toggle" value="started" [(ngModel)]="flags.gameStarts.show" (change)="changeFilter()" name="showGameStarts"/>
                     <svg height="10" width="10"><circle cx="50%" cy="50%" r="46%" fill="white" stroke="black" /></svg>
                     Game starts
                 </label> 
                  <label>
-                    <input type="checkbox" class="event-toggle" value="finished" [(ngModel)]="flags.showGameFinishes" (change)="changeFilter()"  name="showGameFinishes"/>
+                    <input type="checkbox" class="event-toggle" value="finished" [(ngModel)]="flags.gameFinishes.show" (change)="changeFilter()"  name="showGameFinishes"/>
                     <svg height="10" width="10"><circle cx="50%" cy="50%" r="46%" fill="white" stroke="black" /></svg>
                     Game finishes
                 </label> 
                 <label>
-                    <input type="checkbox" class="event-toggle" value="correct flag" [(ngModel)]="flags.showCorrectFlags" (change)="changeFilter()"  name="showCorrectFlags"/> 
+                    <input type="checkbox" class="event-toggle" value="correct flag" [(ngModel)]="flags.correctFlags.show" (change)="changeFilter()"  name="showCorrectFlags"/> 
                     <svg height="10" width="10"><circle cx="50%" cy="50%" r="46%" fill="white" stroke="black" /></svg>
                     Correct flags
                 </label> 
                 <label>
-                    <input type="checkbox" class="event-toggle" value="hint"  [(ngModel)]="flags.showHints" (change)="changeFilter()"  name="showHints"/>
+                    <input type="checkbox" class="event-toggle" value="hint"  [(ngModel)]="flags.hints.show" (change)="changeFilter()"  name="showHints"/>
                     <svg height="10" width="10"><circle cx="50%" cy="50%" r="50%" fill="grey" /></svg>
                     Hints
                 </label> 
                 <label>
-                    <input type="checkbox" class="event-toggle" value="wrong flag" [(ngModel)]="flags.showWrongFlags" (change)="changeFilter()"  name="showWrongFlags"/>
+                    <input type="checkbox" class="event-toggle" value="wrong flag" [(ngModel)]="flags.wrongFlags.show" (change)="changeFilter()"  name="showWrongFlags"/>
                     <svg height="10" width="10"><circle cx="50%" cy="50%" r="50%" fill="red" /></svg>
                     Wrong flags
                 </label> 
                 
                 <label>
-                    <input type="checkbox" class="event-toggle" value="cowardly skipped" [(ngModel)]="flags.showLevelSkips" (change)="changeFilter()"  name="showLevelSkips"/>
+                    <input type="checkbox" class="event-toggle" value="cowardly skipped" [(ngModel)]="flags.levelSkips.show" (change)="changeFilter()"  name="showLevelSkips"/>
                      <svg height="10" width="10"><circle cx="50%" cy="50%" r="50%" fill="black" /></svg>
                     Level skips
                 </label> 
                 <label>
-                    <input type="checkbox" class="event-toggle" value="exited prematurely" [(ngModel)]="flags.showPrematureExits" (change)="changeFilter()"  name="showPrematureExits"/>
+                    <input type="checkbox" class="event-toggle" value="exited prematurely" [(ngModel)]="flags.prematureExits.show" (change)="changeFilter()"  name="showPrematureExits"/>
                      <svg height="10" width="10"><circle cx="50%" cy="50%" r="50%" fill="black" /></svg>
                     Premature exits
                 </label> 
                 <label>
-                    <input type="checkbox" class="event-toggle" value="help level" [(ngModel)]="flags.showHelpLevelEvents" (change)="changeFilter()"  name="showHelpLevelEvents"/>
+                    <input type="checkbox" class="event-toggle" value="help level" [(ngModel)]="flags.helpLevelEvents.show" (change)="changeFilter()"  name="showHelpLevelEvents"/>
                     <svg height="10" width="10"><circle cx="50%" cy="50%" r="50%" fill="purple" /></svg>
                     Help level events
                 </label> 

@@ -61,7 +61,7 @@ export class ChartComponent implements OnInit {
                 console.log("visualizing...");
                 // this.visualize();
                 if(this.change==="small") {
-                  this.refreshLines(this.filteredDataset);
+                //   this.refreshLines(this.filteredDataset);
                   this.refreshEvents(this.filteredDataset);
                 } else {
                    this.resetSvg();
