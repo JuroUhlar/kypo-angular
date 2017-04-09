@@ -17,6 +17,9 @@ export class VizViewComponent {
     events;
     originalDataset;
     filteredDataset;
+    xAxis : boolean = true;
+    yAxis : boolean = true; 
+    showLines : boolean = true;
     change="big";
 
     private flags = {
@@ -80,7 +83,7 @@ export class VizViewComponent {
         console.log("Changing filter!");
         console.log(JSON.stringify(this.flags, null, 2));
 
-        this.change = "small";
+        this.change = "flags";
         this.filteredDataset = this.originalDataset;
 
         Object.keys(this.flags).forEach( (flag => {
@@ -88,20 +91,28 @@ export class VizViewComponent {
                 this.filteredDataset = this.filteredDataset.filter(negate(this.flags[flag].comparator));
             }
         }));
+    }
 
-        // if(this.flags.gameStarts.show === false) {
-        //     this.change = "small";
-        //     this.filteredDataset = this.filteredDataset.filter(negate(this.flags.gameStarts.comparator));
-        // }
+    private showAllEvents() {
+        this.change = "flags";
+        this.filteredDataset = this.originalDataset;
+        Object.keys(this.flags).forEach(flag => {this.flags[flag].show = true; }); 
+    }
 
-        // MOCK DEMO IMPLEMENTATION
-        // if(this.flags.showWrongFlags === false) {
-        //     this.change = "small";
-        //     this.filteredDataset = this.originalDataset.filter(x => x.event.toLowerCase().indexOf("wrong flag") === -1);
-        // } else {
-        //     this.change = "small";
-        //     this.filteredDataset = this.originalDataset;
-        // }
+    private hideAllEvents() {
+        this.change = "flags";
+        this.filteredDataset = [];
+        Object.keys(this.flags).forEach(flag => {this.flags[flag].show = false; }); 
+    }
+
+    private toggleAxis() {
+        this.change = "axis";
+        console.log(this.xAxis, this.yAxis);
+    }
+
+    private toggleLines() {
+        this.change = "lines";
+        console.log(this.showLines);
     }
 
 
@@ -113,12 +124,19 @@ export class VizViewComponent {
             // console.log(events);
             this.change="big";
             this.events = events;
+            this.resetUI();
             this.originalDataset = this.events.map(function(event) { return event; });
             this.filteredDataset = this.events.map(function(event) { return event; });
         });
     }
-}
 
-function not(x) {
-    return !x;
+    private resetUI() {
+        this.showLines = true;
+        this.xAxis = true;
+        this.yAxis = true;
+        Object.keys(this.flags).forEach( (flag => {
+            this.flags[flag].show = true; 
+        }));
+
+    }
 }

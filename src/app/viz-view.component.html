@@ -9,12 +9,15 @@
         [originalDataset]="originalDataset"
         [filteredDataset]="filteredDataset"
         [change]="change"
+        [xAxis]="xAxis"
+        [yAxis]="yAxis"
+        [showLines]="showLines"
     > </app-chart>
 
     <form>
         <div class="checkboxes">
                 <label>
-                    <input type="checkbox" class="lines-toggle" checked/>
+                    <input type="checkbox" class="lines-toggle" [(ngModel)]="showLines" (change)="toggleLines()" name="toggleLines"/>
                     <span style="color: black;">&#9644;</span> 
                     Level lines
                 </label> 
@@ -59,6 +62,19 @@
                     <svg height="10" width="10"><circle cx="50%" cy="50%" r="50%" fill="purple" /></svg>
                     Help level events
                 </label> 
+            </div>
+            <div id="UIrow2">
+                <button type="button" (click)="showAllEvents()"> Show all </button>
+                <button type="button" (click)="hideAllEvents()"> Hide all </button>
+                 <label>
+                    <input type="checkbox" class="axis-toggle" [(ngModel)]="xAxis" (change)="toggleAxis()" name="toggleXaxis"/>
+                    Show x axis (time)
+                </label> 
+                <label>
+                    <input type="checkbox" class="axis-toggle" [(ngModel)]="yAxis" (change)="toggleAxis()" name="toggleYaxis"/>
+                    Show y axis (players)
+                </label> 
+           
             </div>
     </form>
 

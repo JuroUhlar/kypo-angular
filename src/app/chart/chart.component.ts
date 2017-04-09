@@ -12,6 +12,10 @@ export class ChartComponent implements OnInit {
   
    @Input() originalDataset; 
    @Input() filteredDataset;
+   @Input() xAxis : boolean;
+   @Input() yAxis : boolean;
+   @Input() showLines : boolean;
+
    @Input() gameID;
    @Input() change;
 
@@ -48,33 +52,41 @@ export class ChartComponent implements OnInit {
 
   ngOnChanges() {
 
-            // console.log(events);
+            if(this.change === "axis"){
+                console.log("Changing axis", this.xAxis, this.yAxis);
+                let d3 = this.d3;
+                d3.select("#xAxis").attr("display",this.xAxis ? "block" : "none");
+                d3.select("#yAxis").style("display",this.yAxis ? "block" : "none");
+                return;
+            }
 
-            //first time -> initialize svg
-            //every next change of data -> visualize new data
-            // console.log("Ng on changes!");
-            // console.log(this.gameID);
-            // console.log(this.filteredDataset);
-            // console.log(this.originalDataset);
+            if(this.change === "lines"){
+                console.log("Toggling lines", this.showLines);
+                if(this.showLines) {
+                    this.refreshLines(this.originalDataset);
+                } else {
+                    this.refreshLines([]);
+                }
+                return;
+            }
+
+            if(this.change === "flags") {
+                this.refreshEvents(this.filteredDataset);
+                return;
+            }
 
             if(this.svg && this.gameID != '' && this.gameID != undefined) {
-                console.log("visualizing...");
-                // this.visualize();
-                if(this.change==="small") {
-                //   this.refreshLines(this.filteredDataset);
-                  this.refreshEvents(this.filteredDataset);
-                } else {
-                   this.resetSvg();
-                   this.resetVariables();
-                   try{
-                      this.prepareData();
-                      this.generateScalesAndAxis();
-                      this.refreshLines(this.filteredDataset);
-                      this.refreshEvents(this.filteredDataset);
-                   } catch (e) {
-                      console.log("Visualization failed. Please check the integrity of your data.");
-                   }
-                }         
+                console.log("visualizing...");       
+                this.resetSvg();
+                this.resetVariables();
+                try{
+                    this.prepareData();
+                    this.generateScalesAndAxis();
+                    this.refreshLines(this.filteredDataset);
+                    this.refreshEvents(this.filteredDataset);
+                } catch (e) {
+                    console.log("Visualization failed. Please check the integrity of your data.");
+                }           
             } else {
                 if(!this.svg) {
                   console.log("Initializing svg");
@@ -102,8 +114,6 @@ export class ChartComponent implements OnInit {
 
     private resetVariables() {
             this.useLogicalTime = false;
-            // this.originalDataset = []
-            // this.filteredDataset = []
             this.players = [];
             this.startTimes = [];
     }
