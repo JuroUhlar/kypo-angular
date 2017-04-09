@@ -1,5 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import * as d3 from 'd3';
+import { D3Service, D3, Selection } from 'd3-ng2-service'; // <-- import the D3 Service, the type alias for the d3 variable and the Selection interface
+
+// import * as d3 from 'd3';
 
 @Component({
   selector: 'app-chart',
@@ -7,11 +9,14 @@ import * as d3 from 'd3';
   styleUrls: ['./chart.component.css']
 })
 export class ChartComponent implements OnInit {
-
+  
    @Input() originalDataset; 
    @Input() filteredDataset;
    @Input() gameID;
+   @Input() change;
 
+    private d3: D3;
+    
     private svg = null;
     private useLogicalTime = false;
 
@@ -28,12 +33,17 @@ export class ChartComponent implements OnInit {
     private padding_horizontal = 20;
     private extra_left_padding = 55;
     private padding_vertical = 20;
-    private color = d3.scaleOrdinal(d3.schemeCategory20).domain(d3.range(1,21)); // Color palette generator, give it a number, it gives you a color 
+    private color;
 
-  constructor() { }
+  constructor(d3Service: D3Service) { 
+      this.d3 = d3Service.getD3(); // <-- obtain the d3 object from the D3 Service
+  }
 
   ngOnInit() {
         this.gameID = "";
+        this.color = this.d3.scaleOrdinal()
+                        .range(this.d3.schemeCategory20)
+                        .domain(this.d3.range(1,21).map( x => x+"")); // Color palette generator, give it a number, it gives you a color )
   }
 
   ngOnChanges() {
@@ -50,16 +60,21 @@ export class ChartComponent implements OnInit {
             if(this.svg && this.gameID != '' && this.gameID != undefined) {
                 console.log("visualizing...");
                 // this.visualize();
-                this.resetSvg();
-                this.resetVariables();
-                try{
-                  this.prepareData();
-                  this.generateScalesAndAxis();
+                if(this.change==="small") {
                   this.refreshLines(this.filteredDataset);
                   this.refreshEvents(this.filteredDataset);
-                } catch (e) {
-                  console.log("Visualization failed. Please check the integrity of your data.");
-                }
+                } else {
+                   this.resetSvg();
+                   this.resetVariables();
+                   try{
+                      this.prepareData();
+                      this.generateScalesAndAxis();
+                      this.refreshLines(this.filteredDataset);
+                      this.refreshEvents(this.filteredDataset);
+                   } catch (e) {
+                      console.log("Visualization failed. Please check the integrity of your data.");
+                   }
+                }         
             } else {
                 if(!this.svg) {
                   console.log("Initializing svg");
@@ -69,6 +84,7 @@ export class ChartComponent implements OnInit {
     }
 
     private initSvg() {
+        let d3 = this.d3;
         this.svg = d3.select('#chart')
             .append("svg")
             .attr("height", this.height)
@@ -124,17 +140,27 @@ export class ChartComponent implements OnInit {
     }
 
     private generateScalesAndAxis() {
+        let d3 = this.d3;
         //*********** SCALES **********************
+        let latestEventTime = 0; 
+        this.originalDataset.forEach( (d) => {
+            if(d.game_seconds > latestEventTime) {
+                latestEventTime = d.game_seconds;
+            }
+        });
+
         this.xScale = d3.scaleLinear()
-                                .domain([0, d3.max(this.originalDataset, function(d) { return d.game_seconds; })]) // X domain boundury defined by the latest event
-                                .range([this.padding_horizontal + this.extra_left_padding, this.width - this.padding_horizontal]); // set by dimensions of SVG - padding
+                                .domain([0, latestEventTime]) // X domain boundury defined by the latest event
+                                .range([this.padding_horizontal + this.extra_left_padding, this.width - this.padding_horizontal]); // set by dimensions of SVG - padding                                    
+
+   
 
         this.yScale = d3.scaleLinear() // accept players index in array
                                 .domain([0, this.players.length])    // Y domain boundaty defined by number of players
                                 .range([this.padding_vertical, this.height - this.padding_vertical]); // set by dimensions of SVG - padding
 
         //************AXIS ******************************
-        var xAxis = d3.axisBottom()
+        var xAxis = d3.axisBottom(this.xScale)
                 .scale(this.xScale)
                 .tickValues(d3.range(0,this.xScale.domain()[1],900)) // Make ticks every 15 minutes (900 seconds), from 0 to latest event - upper bound of xScale domain
                 .tickFormat(d3.format("d")); //remove "," from format to make it easier to convert to HH:MM:SS  

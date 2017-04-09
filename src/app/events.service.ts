@@ -6,9 +6,14 @@ import 'rxjs/add/operator/map';
 export class EventsService {
   constructor(private http: Http) {}
 
+  // private baseURL = "http://localhost:5000";
+  private baseURL = "http://kypo2-uhlar.rhcloud.com";
+  
+
+
   getGames() {
     //   return ["IT WORKS!", "dataset2", "all-events", "st-polten", "test-data"];
-     return this.http.get('http://localhost:5000/games')
+     return this.http.get(this.baseURL+'/games')
       .map(response => {
         return response.json();
         // console.log(response);
@@ -16,7 +21,7 @@ export class EventsService {
   }
 
   getEvents(gameId) {
-       return this.http.get('http://localhost:5000/events?game_instance_ID='+gameId)
+       return this.http.get(this.baseURL+'/events?game_instance_ID='+gameId)
       .map(response => {
         return response.json();
       });
