@@ -15,6 +15,7 @@ export class ChartComponent implements OnInit {
    @Input() xAxis : boolean;
    @Input() yAxis : boolean;
    @Input() showLines : boolean;
+   @Input() useLogicalTime : boolean;
 
    @Input() gameID;
    @Input() change;
@@ -22,7 +23,6 @@ export class ChartComponent implements OnInit {
     private d3: D3;
     
     private svg = null;
-    private useLogicalTime = false;
 
     private players = [];
     private startTimes = [];
@@ -63,11 +63,20 @@ export class ChartComponent implements OnInit {
             if(this.change === "lines"){
                 console.log("Toggling lines", this.showLines);
                 if(this.showLines) {
-                    this.refreshLines(this.originalDataset);
+                    this.refreshLines(this.filteredDataset);
                 } else {
                     this.refreshLines([]);
                 }
                 return;
+            }
+
+            if(this.change === "level") {  
+                console.log(this.useLogicalTime); 
+                 this.svg.selectAll("circle").remove();
+                 this.svg.selectAll(".level-line").remove();          
+                this.refreshLines(this.filteredDataset);
+                this.refreshEvents(this.filteredDataset);    
+                return;       
             }
 
             if(this.change === "flags") {
@@ -211,6 +220,8 @@ export class ChartComponent implements OnInit {
 
     
     private refreshLines(dataset) {
+
+         console.log("Refreshing lines!");
     //***********************************************
             // LINES CERRESPONDING TO DURATION OF EACH LEVEL 
             var lines = this.svg.select("#lines").selectAll(".level-line")
@@ -279,7 +290,7 @@ export class ChartComponent implements OnInit {
 
     private refreshEvents(dataset) {
 
-    // console.log("Refresh started!");
+    console.log("Refreshing events!");
      
             //************************************************    
             // CIRCLES CORRESPONDING TO ALL GAME EVENTS

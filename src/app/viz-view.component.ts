@@ -20,7 +20,10 @@ export class VizViewComponent {
     xAxis : boolean = true;
     yAxis : boolean = true; 
     showLines : boolean = true;
+    levels = [1,2,3,4,5,6];
+    selectedLevel : string = "all";
     change="big";
+    useLogicalTime : boolean = false;
 
     private flags = {
         gameStarts: {
@@ -79,23 +82,35 @@ export class VizViewComponent {
 
     }
 
+    changeLevel() {
+        console.log("\n [vizview] changing level!");
+        console.log(this.selectedLevel); 
+        this.change="level";
+
+        let level = this.selectedLevel[0];
+        this.filteredDataset = [];
+        this.filteredDataset = this.filterInLevel(level);
+        this.showLines = true;
+        this.applyFlagFilters();
+        if(this.selectedLevel.indexOf("shift") != -1) {
+            this.useLogicalTime = true;
+        } else {
+            this.useLogicalTime = false;
+        }
+    }
+
     changeFilter() {
         console.log("Changing filter!");
         console.log(JSON.stringify(this.flags, null, 2));
 
         this.change = "flags";
-        this.filteredDataset = this.originalDataset;
-
-        Object.keys(this.flags).forEach( (flag => {
-            if(this.flags[flag].show === false) {
-                this.filteredDataset = this.filteredDataset.filter(negate(this.flags[flag].comparator));
-            }
-        }));
+        // this.filteredDataset = this.originalDataset;
+        this.applyFlagFilters();
     }
 
     private showAllEvents() {
         this.change = "flags";
-        this.filteredDataset = this.originalDataset;
+        this.filteredDataset = this.filterInLevel(this.selectedLevel[0]);
         Object.keys(this.flags).forEach(flag => {this.flags[flag].show = true; }); 
     }
 
@@ -113,6 +128,24 @@ export class VizViewComponent {
     private toggleLines() {
         this.change = "lines";
         console.log(this.showLines);
+    }
+
+    private filterInLevel(level) {
+        if (level === "a") {
+            return this.originalDataset;
+        } else {
+            return this.originalDataset.filter(function (d) {
+                return d.level == level;
+            });
+        }    
+    }
+
+    private applyFlagFilters() {
+        Object.keys(this.flags).forEach( (flag => {
+            if(this.flags[flag].show === false) {
+                this.filteredDataset = this.filteredDataset.filter(negate(this.flags[flag].comparator));
+            }
+        }));
     }
 
 

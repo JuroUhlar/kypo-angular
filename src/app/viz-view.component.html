@@ -12,6 +12,7 @@
         [xAxis]="xAxis"
         [yAxis]="yAxis"
         [showLines]="showLines"
+        [useLogicalTime]="useLogicalTime"
     > </app-chart>
 
     <form>
@@ -74,6 +75,11 @@
                     <input type="checkbox" class="axis-toggle" [(ngModel)]="yAxis" (change)="toggleAxis()" name="toggleYaxis"/>
                     Show y axis (players)
                 </label> 
+                <select name="selectLevel" [(ngModel)]="selectedLevel" (change)="changeLevel()">
+                    <option value="all">All levels</option>
+                    <option *ngFor="let level of levels" [value]="level">Level {{level}} </option>
+                    <option *ngFor="let level of levels" [value]="level + ' shift'">Level {{level}} - logical time</option>
+                </select>
            
             </div>
     </form>
