@@ -17,6 +17,7 @@ export class VizViewComponent {
     events;
     originalDataset;
     filteredDataset;
+    level = "a";
     xAxis : boolean = true;
     yAxis : boolean = true; 
     showLines : boolean = true;
@@ -83,14 +84,12 @@ export class VizViewComponent {
     }
 
     changeLevel() {
-        console.log("\n [vizview] changing level!");
-        console.log(this.selectedLevel); 
+        // console.log("\n [vizview] changing level!");
+        // console.log(this.selectedLevel); 
         this.change="level";
-
-        let level = this.selectedLevel[0];
-        this.filteredDataset = [];
-        this.filteredDataset = this.filterInLevel(level);
+        this.level = this.selectedLevel[0];
         this.showLines = true;
+        this.applyLevelFilter();
         this.applyFlagFilters();
         if(this.selectedLevel.indexOf("shift") != -1) {
             this.useLogicalTime = true;
@@ -102,15 +101,14 @@ export class VizViewComponent {
     changeFilter() {
         console.log("Changing filter!");
         console.log(JSON.stringify(this.flags, null, 2));
-
         this.change = "flags";
-        // this.filteredDataset = this.originalDataset;
+        this.applyLevelFilter();
         this.applyFlagFilters();
     }
 
     private showAllEvents() {
         this.change = "flags";
-        this.filteredDataset = this.filterInLevel(this.selectedLevel[0]);
+        this.applyLevelFilter();
         Object.keys(this.flags).forEach(flag => {this.flags[flag].show = true; }); 
     }
 
@@ -130,12 +128,12 @@ export class VizViewComponent {
         console.log(this.showLines);
     }
 
-    private filterInLevel(level) {
-        if (level === "a") {
-            return this.originalDataset;
+    private applyLevelFilter() {
+        if (this.level === "a") {
+            this.filteredDataset = this.originalDataset;
         } else {
-            return this.originalDataset.filter(function (d) {
-                return d.level == level;
+            this.filteredDataset = this.originalDataset.filter(d => {
+                return d.level == this.level;
             });
         }    
     }
@@ -152,14 +150,14 @@ export class VizViewComponent {
     ngOnChanges() {
         //every time gameID changes, get events from service and update this.events
         //everything dependand on new data must be inside the subscribe method
-
         this.eventsService.getEvents(this.gameId).subscribe(events => {
             // console.log(events);
             this.change="big";
-            this.events = events;
             this.resetUI();
-            this.originalDataset = this.events.map(function(event) { return event; });
-            this.filteredDataset = this.events.map(function(event) { return event; });
+            this.level = "a";
+            this.selectedLevel="all";
+            this.originalDataset = events.map(function(event) { return event; });
+            this.filteredDataset = events.map(function(event) { return event; });
         });
     }
 

@@ -12,6 +12,7 @@ export class ChartComponent implements OnInit {
   
    @Input() originalDataset; 
    @Input() filteredDataset;
+   @Input() level;
    @Input() xAxis : boolean;
    @Input() yAxis : boolean;
    @Input() showLines : boolean;
@@ -61,9 +62,9 @@ export class ChartComponent implements OnInit {
             }
 
             if(this.change === "lines"){
-                console.log("Toggling lines", this.showLines);
+                // console.log("Toggling lines", this.showLines);
                 if(this.showLines) {
-                    this.refreshLines(this.filteredDataset);
+                    this.renderLinesForCurrentLevel();
                 } else {
                     this.refreshLines([]);
                 }
@@ -71,10 +72,10 @@ export class ChartComponent implements OnInit {
             }
 
             if(this.change === "level") {  
-                console.log(this.useLogicalTime); 
-                 this.svg.selectAll("circle").remove();
-                 this.svg.selectAll(".level-line").remove();          
-                this.refreshLines(this.filteredDataset);
+                this.svg.selectAll("circle").remove();
+                this.svg.selectAll(".level-line").remove();   
+
+                this.renderLinesForCurrentLevel();
                 this.refreshEvents(this.filteredDataset);    
                 return;       
             }
@@ -102,6 +103,15 @@ export class ChartComponent implements OnInit {
                   this.initSvg();
                 }         
             }
+    }
+
+    private renderLinesForCurrentLevel() {
+        if(this.level === "a") {
+            var linesDataset = this.originalDataset;
+        } else {
+            var linesDataset = this.originalDataset.filter(event => {return event.level == this.level}); 
+        }          
+        this.refreshLines(linesDataset);
     }
 
     private initSvg() {
