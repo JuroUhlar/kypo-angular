@@ -33,6 +33,8 @@ export class ChartComponent implements OnInit {
 
     private SvgInitialized = false;
 
+    private previousLogicalTime : boolean ;
+
     private width = 700;
     private height = window.innerHeight - 120; // Dynamically set height
     private padding_horizontal = 20;
@@ -52,7 +54,7 @@ export class ChartComponent implements OnInit {
   }
 
   ngOnChanges() {
-
+            // console.log("chart ngOnChanges");
             if(this.change === "axis"){
                 console.log("Changing axis", this.xAxis, this.yAxis);
                 let d3 = this.d3;
@@ -71,12 +73,19 @@ export class ChartComponent implements OnInit {
                 return;
             }
 
-            if(this.change === "level") {  
-                this.svg.selectAll("circle").remove();
-                this.svg.selectAll(".level-line").remove();   
+            if(this.change === "level") {
+                console.log("**************** [chart] changing level!");
+                // console.log("[chart]: change = level"); 
+                // console.log("[chart]: use logical time:", this.useLogicalTime);
+                if (this.previousLogicalTime != this.useLogicalTime) {
+                        this.svg.selectAll("circle").remove();
+                        this.svg.selectAll(".level-line").remove();  
+                }  
 
                 this.renderLinesForCurrentLevel();
                 this.refreshEvents(this.filteredDataset);    
+
+                this.previousLogicalTime = this.useLogicalTime;
                 return;       
             }
 
@@ -85,8 +94,8 @@ export class ChartComponent implements OnInit {
                 return;
             }
 
-            if(this.svg && this.gameID != '' && this.gameID != undefined) {
-                console.log("visualizing...");       
+            if(this.change === "game") {
+                console.log("********************** Visualizing a new game!");       
                 this.resetSvg();
                 this.resetVariables();
                 try{
@@ -96,13 +105,14 @@ export class ChartComponent implements OnInit {
                     this.refreshEvents(this.filteredDataset);
                 } catch (e) {
                     console.log("Visualization failed. Please check the integrity of your data.");
-                }           
-            } else {
-                if(!this.svg) {
+                }
+                return;           
+            }
+
+            if(!this.svg) {
                   console.log("Initializing svg");
                   this.initSvg();
-                }         
-            }
+            }       
     }
 
     private renderLinesForCurrentLevel() {
@@ -120,7 +130,6 @@ export class ChartComponent implements OnInit {
             .append("svg")
             .attr("height", this.height)
             .attr("width", this.width);
-
             this.svg.append("g").attr("id", "lines")
             this.svg.append("g").attr("id", "circles")
     }
@@ -132,7 +141,9 @@ export class ChartComponent implements OnInit {
     }
 
     private resetVariables() {
+            console.log("resetVariables()");
             this.useLogicalTime = false;
+            this.previousLogicalTime = false;
             this.players = [];
             this.startTimes = [];
     }

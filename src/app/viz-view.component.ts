@@ -26,7 +26,7 @@ export class VizViewComponent {
     change="big";
     useLogicalTime : boolean = false;
 
-    private flags = {
+    flags = {
         gameStarts: {
             show: true,
             comparator: function (event) {
@@ -84,18 +84,21 @@ export class VizViewComponent {
     }
 
     changeLevel() {
-        // console.log("\n [vizview] changing level!");
-        // console.log(this.selectedLevel); 
-        this.change="level";
-        this.level = this.selectedLevel[0];
-        this.showLines = true;
-        this.applyLevelFilter();
-        this.applyFlagFilters();
+        console.log("**************** [vizview] changing level!");
         if(this.selectedLevel.indexOf("shift") != -1) {
             this.useLogicalTime = true;
         } else {
             this.useLogicalTime = false;
         }
+        // console.log(this.selectedLevel); 
+        this.change="level";
+        this.level = this.selectedLevel[0];
+        this.showLines = true;
+      
+        this.applyLevelFilter();
+        this.applyFlagFilters();
+     
+        console.log("[Viz-view] - use logical time: ", this.useLogicalTime);
     }
 
     changeFilter() {
@@ -106,24 +109,24 @@ export class VizViewComponent {
         this.applyFlagFilters();
     }
 
-    private showAllEvents() {
+    showAllEvents() {
         this.change = "flags";
         this.applyLevelFilter();
         Object.keys(this.flags).forEach(flag => {this.flags[flag].show = true; }); 
     }
 
-    private hideAllEvents() {
+    hideAllEvents() {
         this.change = "flags";
         this.filteredDataset = [];
         Object.keys(this.flags).forEach(flag => {this.flags[flag].show = false; }); 
     }
 
-    private toggleAxis() {
+    toggleAxis() {
         this.change = "axis";
         console.log(this.xAxis, this.yAxis);
     }
 
-    private toggleLines() {
+    toggleLines() {
         this.change = "lines";
         console.log(this.showLines);
     }
@@ -152,10 +155,11 @@ export class VizViewComponent {
         //everything dependand on new data must be inside the subscribe method
         this.eventsService.getEvents(this.gameId).subscribe(events => {
             // console.log(events);
-            this.change="big";
-            this.resetUI();
-            this.level = "a";
-            this.selectedLevel="all";
+            if(this.gameId != '' && this.gameId != undefined && this.gameId != "none") {
+                console.log(this.gameId);
+                this.change = "game";
+            }
+            this.resetUI();      
             this.originalDataset = events.map(function(event) { return event; });
             this.filteredDataset = events.map(function(event) { return event; });
         });
@@ -165,6 +169,9 @@ export class VizViewComponent {
         this.showLines = true;
         this.xAxis = true;
         this.yAxis = true;
+        this.level = "a";
+        this.selectedLevel="all";
+        this.useLogicalTime = false;
         Object.keys(this.flags).forEach( (flag => {
             this.flags[flag].show = true; 
         }));
