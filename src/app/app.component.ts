@@ -13,7 +13,7 @@ export class AppComponent {
   selectedPlayer = 'none';
 
   // sidebar variable
-  private _opened: boolean = false;
+  _opened: boolean = false;
 
   onSelectDataset(game) {
     if(game != '' && game != 'none' && game != null) {
@@ -30,11 +30,11 @@ export class AppComponent {
     console.log("[App compomennt] Selected player is ", this.selectedPlayer );
   }
 
-  private _toggleSidebar() {
+  _toggleSidebar() {
     this._opened = !this._opened;
   }
 
-  private _closeSidebar() {
+  _closeSidebar() {
     this._opened = false;
   }
 }

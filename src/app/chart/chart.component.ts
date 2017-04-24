@@ -27,7 +27,7 @@ export class ChartComponent implements OnInit {
     
     private svg = null;
 
-    private players = [];
+    players = [];
     private startTimes = [];
 
     private xScale;
