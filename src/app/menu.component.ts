@@ -12,6 +12,7 @@ export class MenuComponent {
 
     games = [];
     @Output() selectDataset = new EventEmitter();
+    @Input() selectedPlayer;
 
     constructor(private eventsService:EventsService) {}
 

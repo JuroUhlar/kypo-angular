@@ -21,6 +21,8 @@ export class ChartComponent implements OnInit {
    @Input() gameID;
    @Input() change;
 
+   @Output() selectedPlayerEmitter = new EventEmitter();
+
     private d3: D3;
     
     private svg = null;
@@ -42,9 +44,18 @@ export class ChartComponent implements OnInit {
     private padding_vertical = 20;
     private color;
 
+     // experiment
+    selectedPlayer = "none";
+
   constructor(d3Service: D3Service) { 
       this.d3 = d3Service.getD3(); // <-- obtain the d3 object from the D3 Service
   }
+
+    // experiment
+    changePlayer() {
+        console.log("changing player");
+        this.selectedPlayerEmitter.emit(this.selectedPlayer);
+    }
 
   ngOnInit() {
         this.gameID = "";
@@ -52,6 +63,9 @@ export class ChartComponent implements OnInit {
                         .range(this.d3.schemeCategory20)
                         .domain(this.d3.range(1,21).map( x => x+"")); // Color palette generator, give it a number, it gives you a color )
   }
+
+ 
+
 
   ngOnChanges() {
             // console.log("chart ngOnChanges");
@@ -443,3 +457,7 @@ function toHHMMSS (snippet) {
 
     return hh+':'+mm+':'+ss;
 }
+
+ function foo() {
+        alert(this.innerHTML);
+  }

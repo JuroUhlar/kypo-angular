@@ -14,6 +14,7 @@
         [showLines]="showLines"
         [useLogicalTime]="useLogicalTime"
         [level]="level"
+        (selectedPlayerEmitter)="onSelectPlayer($event)"
     > </app-chart>
 
     <form>

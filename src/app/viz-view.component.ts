@@ -26,6 +26,10 @@ export class VizViewComponent {
     change="big";
     useLogicalTime : boolean = false;
 
+    @Output() selectedPlayerEmitter = new EventEmitter(); 
+
+
+
     flags = {
         gameStarts: {
             show: true,
@@ -80,7 +84,6 @@ export class VizViewComponent {
     constructor(private eventsService:EventsService) {}
 
     ngOnInit() {
-
     }
 
     changeLevel() {
@@ -108,6 +111,8 @@ export class VizViewComponent {
         this.applyLevelFilter();
         this.applyFlagFilters();
     }
+
+
 
     showAllEvents() {
         this.change = "flags";
@@ -177,4 +182,9 @@ export class VizViewComponent {
         }));
 
     }
+
+
+    onSelectPlayer(player) {
+        this.selectedPlayerEmitter.emit(player);
+  }
 }

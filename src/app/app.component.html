@@ -4,13 +4,15 @@
 
   <div class="menu-wrapper">
         <kypo-menu
-            (selectDataset)="onSelectDataset($event)">
+            (selectDataset)="onSelectDataset($event)"
+            [selectedPlayer]="selectedPlayer">
         </kypo-menu>
   </div>
 
   <div class="viz-wrapper">
         <viz-view
-            [gameId]="selectedGame">
+            [gameId]="selectedGame"
+            (selectedPlayerEmitter)="onSelectPlayer($event)">
         </viz-view>
   </div>
 
