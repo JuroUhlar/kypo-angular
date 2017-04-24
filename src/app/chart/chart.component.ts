@@ -37,14 +37,20 @@ export class ChartComponent implements OnInit {
 
     private previousLogicalTime : boolean ;
 
-    private width = 700;
-    private height = window.innerHeight - 120; // Dynamically set height
+
+
+    
+    width = window.innerWidth - 40; // Dynamically set width to make sure diagram always fits on page
+    height = window.innerHeight - 180; // Dynamically set height
+
+
+
     private padding_horizontal = 20;
     private extra_left_padding = 55;
     private padding_vertical = 20;
     private color;
 
-     // experiment
+    // experiment
     selectedPlayer = "none";
 
   constructor(d3Service: D3Service) { 
@@ -115,8 +121,9 @@ export class ChartComponent implements OnInit {
                 try{
                     this.prepareData();
                     this.generateScalesAndAxis();
-                    this.refreshLines(this.filteredDataset);
-                    this.refreshEvents(this.filteredDataset);
+                    // this.refreshLines(this.filteredDataset);
+                    // this.refreshEvents(this.filteredDataset);
+                    this.renderLinesForCurrentLevel(); // renders just lines insteaf of the entire dataset
                 } catch (e) {
                     console.log("Visualization failed. Please check the integrity of your data.");
                 }

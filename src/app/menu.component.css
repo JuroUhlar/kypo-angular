@@ -1,4 +1,36 @@
-ul li {
+ul li a {
     color: blue;
     font-size: 15px;
+    display: block;
+    padding: 5px;
+    padding-left: 15px;
+    color: white;
+    text-decoration: none;
+
+}
+
+ul li a:hover {
+    background-color: lightgray;
+    color: black;
+}
+
+
+
+ul {
+  display: block;
+  list-style-type: none;
+  padding: 0;
+}
+
+h1,h2,h3,h4,h5,h6 {
+    color:lightblue;
+    font-size: 14px;
+    padding: 5px;
+    color: #bdbdbd;
+    text-transform: uppercase
+}
+
+p {
+    color: white;
+    padding: 10px;
 }

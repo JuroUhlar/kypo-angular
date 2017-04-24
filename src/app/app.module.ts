@@ -11,6 +11,8 @@ import { EventsService } from './events.service';
 import { VizViewComponent } from './viz-view.component';
 import { ChartComponent } from './chart/chart.component';
 
+import { SidebarModule } from 'ng-sidebar';
+
 
 @NgModule({
   declarations: [
@@ -22,7 +24,8 @@ import { ChartComponent } from './chart/chart.component';
   imports: [
     BrowserModule,
     FormsModule,
-    HttpModule
+    HttpModule,
+    SidebarModule.forRoot()
   ],
   providers: [EventsService, D3Service],
   bootstrap: [AppComponent]

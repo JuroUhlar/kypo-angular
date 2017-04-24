@@ -166,7 +166,8 @@ export class VizViewComponent {
             }
             this.resetUI();      
             this.originalDataset = events.map(function(event) { return event; });
-            this.filteredDataset = events.map(function(event) { return event; });
+            // this.filteredDataset = events.map(function(event) { return event; });
+            this.filteredDataset = [];
         });
     }
 
@@ -178,7 +179,7 @@ export class VizViewComponent {
         this.selectedLevel="all";
         this.useLogicalTime = false;
         Object.keys(this.flags).forEach( (flag => {
-            this.flags[flag].show = true; 
+            this.flags[flag].show = false; 
         }));
 
     }

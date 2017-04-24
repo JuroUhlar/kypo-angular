@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -7,19 +8,37 @@ import { Component } from '@angular/core';
 })
 
 export class AppComponent {
-  title = 'Kypo vizualization main component';
+  title = 'Kypo game run visualisation tool';
   selectedGame = 'none';
   selectedPlayer = 'none';
+
+  // sidebar variable
+  private _opened: boolean = false;
 
   onSelectDataset(game) {
     if(game != '' && game != 'none' && game != null) {
           // console.log("Parent component received " + game);
           this.selectedGame = game;
     }
+    // closes sidebar
+    // this._closeSidebar();
   }
 
   onSelectPlayer(player){
     this.selectedPlayer = player;
+    this._opened = true;
     console.log("[App compomennt] Selected player is ", this.selectedPlayer );
   }
+
+  private _toggleSidebar() {
+    this._opened = !this._opened;
+  }
+
+  private _closeSidebar() {
+    this._opened = false;
+  }
 }
+
+
+
+

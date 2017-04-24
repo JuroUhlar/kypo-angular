@@ -1,20 +1,53 @@
-<h1>
-  {{title}}
-  </h1>
 
-  <div class="menu-wrapper">
-        <kypo-menu
-            (selectDataset)="onSelectDataset($event)"
-            [selectedPlayer]="selectedPlayer">
-        </kypo-menu>
-  </div>
 
-  <div class="viz-wrapper">
+<!--Navigation at the top-->
+<nav role="navigation" class="navbar navbar-inverse navbar-fixed-top">
+    <div class="navbar-header">         
+        <a class="navbar-brand" (click)="_toggleSidebar()" style="cursor:pointer" title="Main menu with datasets">
+            <span class="glyphicon glyphicon-menu-hamburger" aria-hidden="true" style="color: white"></span>
+        </a>
+        <a class="navbar-brand" href="javascript:window.location.reload(true)" title="Reloads app">
+            {{title}}
+        </a>
+    </div>
+
+     <div class="navbar-right kypo-navbar-right">
+        Selected game: <a (click)="_toggleSidebar()">{{selectedGame}}</a>
+    </div>             
+</nav>
+
+
+ <ng-sidebar-container>
+
+      <!-- A sidebar -->
+      <ng-sidebar [(opened)]="_opened"
+                    [closeOnClickOutside]=true
+                    (click)="_closeSidebar()">
+
+                <div class="menu-wrapper">
+                        <!--Menu component-->
+                        <kypo-menu
+                            (selectDataset)="onSelectDataset($event)"
+                            [selectedPlayer]="selectedPlayer">
+                        </kypo-menu>
+                </div>
+      </ng-sidebar>
+
+       <div class="viz-wrapper">
+           <!--viz view component-->
         <viz-view
             [gameId]="selectedGame"
             (selectedPlayerEmitter)="onSelectPlayer($event)">
         </viz-view>
-  </div>
+       </div>
+
+  
+</ng-sidebar-container>
+
+
+
+
+ 
 
 
 

@@ -1,16 +1,40 @@
 .menu-wrapper {
-    float: left;
     min-width: 150px;
-    padding: 10px;
-    background-color: lightblue;
+    height: 100%;
+    padding-top: 10px;
+    background-color: #424242;
     /*min-height: 500px;*/
-    margin-right: 20px;
+    /*margin-right: 20px;*/
 }
 
 .viz-wrapper {
-    background-color: lightgoldenrodyellow;
-    float: left;
-    padding: 30px;
-    min-width: 65%; 
-    min-height: 400px;
+    background-color: white;
+    /*float: left;*/
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-bottom: 10px;
+    padding-top: 60px;
+    /*min-width: 65%; */
+    /*min-height: 400px;*/
+}
+
+.kypo-navbar-right {
+    float: right;
+    height: 50px;
+    padding: 15px 15px;
+    font-size: 18px;
+    line-height: 20px;
+    color: #9d9d9d;
+    margin-right: 20px;
+    font-size: 15px;
+}
+
+.kypo-navbar-right a:hover {
+    color: white;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.navbar {
+    white-space: nowrap !important;
 }
