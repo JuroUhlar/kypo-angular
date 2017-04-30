@@ -38,3 +38,16 @@
 .navbar {
     white-space: nowrap !important;
 }
+
+@media (max-width: 600px) {
+  .kypo-title {
+    display: none;
+  }
+}
+
+
+@media (max-width: 300px) {
+  .kypo-navbar-right {
+    display: none;
+  }
+}

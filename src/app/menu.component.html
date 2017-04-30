@@ -7,5 +7,8 @@
         </li>
     </ul>
 
-    <h2> Games <br>of selected player</h2>
-    <p>  player ID: <b> {{selectedPlayer}}</b> </p>
+    <div *ngIf="selectedPlayer != 'none'">
+         <h2> Games <br>of selected player</h2>
+         <p>  player ID: <b> {{selectedPlayer}}</b> </p>
+    </div>
+   

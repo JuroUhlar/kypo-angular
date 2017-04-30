@@ -2,14 +2,17 @@
 
 <!--Navigation at the top-->
 <nav role="navigation" class="navbar navbar-inverse navbar-fixed-top">
-    <div class="navbar-header">         
+    <!--<div class="navbar-header">         -->
         <a class="navbar-brand" (click)="_toggleSidebar()" style="cursor:pointer" title="Main menu with datasets">
             <span class="glyphicon glyphicon-menu-hamburger" aria-hidden="true" style="color: white"></span>
         </a>
-        <a class="navbar-brand" href="javascript:window.location.reload(true)" title="Reloads app">
+        <span class="kypo-title">
+             <a class="navbar-brand" href="javascript:window.location.reload(true)" title="Reloads app">
             {{title}}
-        </a>
-    </div>
+            </a>
+        </span>
+       
+    <!--</div>-->
 
      <div class="navbar-right kypo-navbar-right">
         Selected game: <a (click)="_toggleSidebar()">{{selectedGame}}</a>
@@ -35,7 +38,25 @@
 
        <div class="viz-wrapper">
            <!--viz view component-->
-        <viz-view
+
+        <div *ngIf="selectedGame === 'none'">
+            <h2>Welcome</h2>
+            <p>Thank you for testing this prototype visualization of a run of a KYPOlab security game.  </p>
+            <p> <span style="font-weight: bold"> If you are here as a tester, please fill in your name in the text field below.</span> If will help us identify the record of your session. </p>
+                <div class="form-inline">
+                    <label style="font-weight: normal" class="col-2 col-form-label">Name:</label>
+                    <input class="form-control" type="text" value="" id="example-text-input">    
+                </div>
+            
+            <h4 style="margin-top: 40px"> User testing form </h4> 
+            <p> User testing consists of 4 short tasks followed up by a few questions asking for your feedback, all in a single
+                <a href="https://goo.gl/forms/NKJoux07z1Qf3bJ32" target="_blank" style="font-weight: bold"> online form available here.</a> <p>
+
+            <h4 style="margin-top: 40px">Contact</h4>
+            <p>If you have any questions, or want to contact the author, write to Juraj Uhlár at <i>422160@mail.muni.cz</i>
+        </div>   
+
+        <viz-view *ngIf="selectedGame != 'none'"
             [gameId]="selectedGame"
             (selectedPlayerEmitter)="onSelectPlayer($event)">
         </viz-view>

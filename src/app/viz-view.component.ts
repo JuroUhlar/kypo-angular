@@ -21,7 +21,7 @@ export class VizViewComponent {
     xAxis : boolean = true;
     yAxis : boolean = true; 
     showLines : boolean = true;
-    levels = [1,2,3,4,5,6];
+    levels = [];
     selectedLevel : string = "all";
     change="big";
     useLogicalTime : boolean = false;
@@ -164,10 +164,12 @@ export class VizViewComponent {
                 console.log(this.gameId);
                 this.change = "game";
             }
-            this.resetUI();      
+            this.resetUI();
+
             this.originalDataset = events.map(function(event) { return event; });
             // this.filteredDataset = events.map(function(event) { return event; });
             this.filteredDataset = [];
+            this.initLevelArray();
         });
     }
 
@@ -182,6 +184,19 @@ export class VizViewComponent {
             this.flags[flag].show = false; 
         }));
 
+    }
+
+    private initLevelArray() {
+        var maxLevel = 0;
+        this.originalDataset.forEach(event => {
+            if (event.level > maxLevel) {
+                maxLevel = event.level;
+            } 
+        });
+        this.levels = [];
+        for(var i = 1; i<=maxLevel; i++ ){
+            this.levels[i-1] = i; 
+        }
     }
 
 

@@ -256,7 +256,15 @@ export class ChartComponent implements OnInit {
                 return this.yScale(i) + 4;
             })
             .attr("x", "0")
-            .attr("class", "player-label");
+            .attr("class", "player-label")
+            .attr("style", "cursor: pointer")
+            .on("click",  () => { 
+                // alert("Click on player " + d + "!"); 
+                // let selector = <HTMLSelectElement>document.getElementById("playerSelector");
+                // selector.value = d;
+                this.selectedPlayer = d;
+                this.changePlayer();
+             });
         });
     }
 
