@@ -203,7 +203,7 @@ export class ChartComponent implements OnInit {
     private generateScalesAndAxis() {
         let d3 = this.d3;
         //*********** SCALES **********************
-        let latestEventTime = 0; 
+        var latestEventTime = 0; 
         this.originalDataset.forEach( (d) => {
             if(d.game_seconds > latestEventTime) {
                 latestEventTime = d.game_seconds;
@@ -218,12 +218,14 @@ export class ChartComponent implements OnInit {
 
         this.yScale = d3.scaleLinear() // accept players index in array
                                 .domain([0, this.players.length])    // Y domain boundaty defined by number of players
-                                .range([this.padding_vertical, this.height - this.padding_vertical]); // set by dimensions of SVG - padding
+                                .range([this.padding_vertical, this.height - this.padding_vertical]); 
+                                // .nice(); 
 
         //************AXIS ******************************
         var xAxis = d3.axisBottom(this.xScale)
                 .scale(this.xScale)
-                .tickValues(d3.range(0,this.xScale.domain()[1],900)) // Make ticks every 15 minutes (900 seconds), from 0 to latest event - upper bound of xScale domain
+                .ticks(d3.timeMinute.every(15))
+                .tickValues(d3.range(0,this.xScale.domain()[1],900).concat([latestEventTime])) // Make ticks every 15 minutes (900 seconds), from 0 to latest event - upper bound of xScale domain
                 .tickFormat(d3.format("d")); //remove "," from format to make it easier to convert to HH:MM:SS  
     
         //Generate X axis
@@ -342,8 +344,15 @@ export class ChartComponent implements OnInit {
 
     console.log("Refreshing events!");
      
-            //************************************************    
+            //***********************************************    
             // CIRCLES CORRESPONDING TO ALL GAME EVENTS
+
+                // Define the div for the tooltip
+                var div = this.d3.select("body").append("div")	
+                    .attr("class", "tooltip")				
+                    .style("opacity", 0);
+
+
 
                 var circles =  this.svg.selectAll("circle")
                                   .data(dataset, (d) => { return d.ID + d.game_seconds +d.event;});
@@ -396,8 +405,28 @@ export class ChartComponent implements OnInit {
                     .attr("stroke-width", "1")
                     .attr("stroke", "grey")
                     // .attr("opacity", "0.5")
+
+                    .on("mouseover", (d) => {		
+                        div.transition()		
+                            .duration(200)		
+                            .style("opacity", .9);		
+                        div	.html("Event: " + d.event + "<br/>" +
+                                "Player " + this.players.indexOf(d.ID) + " (" + d.ID + ")" + "<br/>" + 
+                                "Level: " + d.level + "<br/>" +
+                                "Level time: " + d.logical_time + "<br/>" + 
+                                "Game time: " + toHHMMSS(d.game_seconds)  )	
+                            .style("left", (this.d3.event.pageX - 120) + "px")		
+                            .style("top", (this.d3.event.pageY - 90) + "px");	
+                        })					
+                    .on("mouseout", function(d) {		
+                        div.transition()		
+                            .duration(500)		
+                            .style("opacity", 0);	
+                    })
+
                     .append("title")
                     .text((d) => {
+                    // .attr("title", (d) => {
                         return  "Event: " + d.event + "\n" +
                                 "Player " + this.players.indexOf(d.ID) + " (" + d.ID + ") \n" + 
                                 "Level: " + d.level + "\n" +
