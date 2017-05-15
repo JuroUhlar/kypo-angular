@@ -8,3 +8,7 @@ svg text.player-label {
   font-weight: 400 !important;
 }
 
+.checkboxes label {
+   margin-right: 20px;
+}
+

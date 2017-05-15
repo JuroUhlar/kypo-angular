@@ -66,8 +66,9 @@ export class ChartComponent implements OnInit {
   ngOnInit() {
         this.gameID = "";
         this.color = this.d3.scaleOrdinal()
-                        .range(this.d3.schemeCategory20)
-                        .domain(this.d3.range(1,21).map( x => x+"")); // Color palette generator, give it a number, it gives you a color )
+                        // .range(this.d3.schemeCategory10)
+                        .range(["#AEC7E8", "#FFBB78", "#98DF8A", "#C49C94", "#9EDAE5", "#DBDB8D"])
+                        .domain(this.d3.range(1,10).map( x => x+"")); // Color palette generator, give it a number, it gives you a color )
   }
 
  
