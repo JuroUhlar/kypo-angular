@@ -271,17 +271,43 @@ export class ChartComponent implements OnInit {
         });
     }
 
+
+    private isEndOfLevelEvent(d) {
+        return  d.event === "Correct flag submited" || d.event === "Game finished" || 
+                d.event === "Level cowardly skipped" || d.event === "Game exited prematurely"; 
+    }
     
     private refreshLines(dataset) {
+
+        // assemble last events of unfinished levels
+
+        var lastEventsOfUnfinishedLevels = [];
+        this.players.forEach( (playerID) => {
+            var lastEventTime = 0;
+            var lastEvent;
+            //get last event of each player
+            dataset.filter((event) => { return event.ID === playerID}).forEach((event) => {
+                if (event.game_seconds > lastEventTime) {
+                    lastEventTime = event.game_seconds;
+                    lastEvent = event;
+                } 
+            })
+            if(!this.isEndOfLevelEvent(lastEvent)) {
+                    lastEvent.unfinishedLevel = true;
+                    lastEventsOfUnfinishedLevels.push(lastEvent);     
+            }
+        } ); 
+
+        console.log(lastEventsOfUnfinishedLevels);
+
 
          console.log("Refreshing lines!");
     //***********************************************
             // LINES CERRESPONDING TO DURATION OF EACH LEVEL 
             var lines = this.svg.select("#lines").selectAll(".level-line")
                 .data(dataset.filter( d => { // get only events that mean end of level
-                   return d.event === "Correct flag submited" || d.event === "Game finished" || 
-                          d.event === "Level cowardly skipped" || d.event === "Game exited prematurely"; 
-                }),  (d) => {
+                   return this.isEndOfLevelEvent(d); 
+                }).concat(lastEventsOfUnfinishedLevels),  (d) => {
                     return d.ID + d.game_seconds + d.event;
                 });
 
@@ -329,7 +355,21 @@ export class ChartComponent implements OnInit {
                 })
                 .transition()
                 .duration(500)
-                .attr("stroke-width", "3")
+                .attr("stroke-width", (d) => {
+                     if(d.unfinishedLevel) {
+                         return "1";
+                     } else {
+                         return "4";
+                     }
+                })
+                .attr("stroke-linecap", "round")
+                .attr("stroke-dasharray", (d) => {
+                     if(d.unfinishedLevel) {
+                         return "10";
+                     } else {
+                         return "0";
+                     }
+                })
                 .delay( (d,i) => {
                     return i * 5;
                 });
