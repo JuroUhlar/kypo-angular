@@ -11,6 +11,7 @@ import { EventsService } from './events.service'
 export class MenuComponent {
 
     games = [];
+    gamesOfSelectedPlayer = [];
     @Output() selectDataset = new EventEmitter();
     @Input() selectedPlayer;
 
@@ -26,5 +27,12 @@ export class MenuComponent {
     onClick(game) {
         // console.log(game);
         this.selectDataset.emit(game);
+    }
+
+    ngOnChanges() {
+        this.eventsService.getGamesOfPlayer(this.selectedPlayer).subscribe(games => {
+            console.log(games);
+            this.gamesOfSelectedPlayer = games;
+        });
     }
 }

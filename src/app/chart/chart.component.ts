@@ -273,6 +273,7 @@ export class ChartComponent implements OnInit {
 
 
     private isEndOfLevelEvent(d) {
+        // if(!d) return true;
         return  d.event === "Correct flag submited" || d.event === "Game finished" || 
                 d.event === "Level cowardly skipped" || d.event === "Game exited prematurely"; 
     }
@@ -292,7 +293,7 @@ export class ChartComponent implements OnInit {
                     lastEvent = event;
                 } 
             })
-            if(!this.isEndOfLevelEvent(lastEvent)) {
+            if(lastEvent && !this.isEndOfLevelEvent(lastEvent)) {
                     lastEvent.unfinishedLevel = true;
                     lastEventsOfUnfinishedLevels.push(lastEvent);     
             }
@@ -357,9 +358,9 @@ export class ChartComponent implements OnInit {
                 .duration(500)
                 .attr("stroke-width", (d) => {
                      if(d.unfinishedLevel) {
-                         return "1";
+                         return "3";
                      } else {
-                         return "4";
+                         return "5";
                      }
                 })
                 .attr("stroke-linecap", "round")
@@ -482,9 +483,9 @@ export class ChartComponent implements OnInit {
                                 if (d.event === "Correct flag submited" || 
                                     d.event === "Game finished" ||
                                     d.event === "Game exited prematurely") {
-                                    return 7; 
+                                    return 8; 
                                 } else {
-                                    return 5;
+                                    return 6;
                                 }
                             });
                             // .delay(function (d,i) {

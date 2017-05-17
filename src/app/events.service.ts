@@ -12,11 +12,16 @@ export class EventsService {
 
 
   getGames() {
-    //   return ["IT WORKS!", "dataset2", "all-events", "st-polten", "test-data"];
      return this.http.get(this.baseURL+'/games')
       .map(response => {
         return response.json();
-        // console.log(response);
+      });
+  }
+
+  getGamesOfPlayer(playerID) {
+    return this.http.get(this.baseURL+'/games/'+playerID)
+      .map(response => {
+        return response.json();    
       });
   }
 

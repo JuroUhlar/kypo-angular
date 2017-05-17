@@ -10,5 +10,13 @@
     <div *ngIf="selectedPlayer != 'none'">
          <h2> Games <br>of selected player</h2>
          <p>  player ID: <b> {{selectedPlayer}}</b> </p>
+
+          <ul>
+        <li *ngFor="let game of gamesOfSelectedPlayer">
+            <a style="cursor:pointer" href="#" (click)="onClick(game)">{{game}}</a>
+        </li>
+    </ul>
+
+
     </div>
    
