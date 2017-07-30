@@ -1,13 +1,18 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { D3Service, D3, Selection } from 'd3-ng2-service'; // <-- import the D3 Service, the type alias for the d3 variable and the Selection interface
+import {HostListener} from '@angular/core';
 
-// import * as d3 from 'd3';
+var resizeId;
 
 @Component({
   selector: 'app-chart',
   templateUrl: './chart.component.html',
   styleUrls: ['./chart.component.css']
 })
+
+
+
+
 export class ChartComponent implements OnInit {
   
    @Input() originalDataset; 
@@ -23,6 +28,17 @@ export class ChartComponent implements OnInit {
 
    @Output() selectedPlayerEmitter = new EventEmitter();
 
+    // Add an event listener for window resize
+    // Triggers handler only after the resizing is finished (no change in windows size for 800ms).
+    @HostListener('window:resize', ['$event'])
+        onResize() {
+            // this.finishedResizing();
+            clearTimeout(resizeId); 
+            resizeId = setTimeout(() => {this.finishedResizing();}, 800);
+    }
+
+
+
     private d3: D3;
     
     private svg = null;
@@ -35,7 +51,9 @@ export class ChartComponent implements OnInit {
 
     private SvgInitialized = false;
 
-    private previousLogicalTime : boolean ;
+    private previousLogicalTime : boolean;
+
+
 
 
 
@@ -75,7 +93,7 @@ export class ChartComponent implements OnInit {
 
 
   ngOnChanges() {
-            // console.log("chart ngOnChanges");
+            console.log("chart ngOnChanges");
             if(this.change === "axis"){
                 console.log("Changing axis", this.xAxis, this.yAxis);
                 let d3 = this.d3;
@@ -168,6 +186,22 @@ export class ChartComponent implements OnInit {
             this.previousLogicalTime = false;
             this.players = [];
             this.startTimes = [];
+    }
+
+    
+    // React to window being resized
+    private finishedResizing() {
+        console.log(`The windows has just been resized!`);
+        this.width = window.innerWidth - 40; // Dynamically set width to make sure diagram always fits on page
+        this.height = window.innerHeight - 180; // Dynamically set height
+
+        this.resetSvg();
+         this.svg.attr("height", this.height)
+                 .attr("width", this.width);
+        // this.initSvg();
+        this.generateScalesAndAxis();
+        this.renderLinesForCurrentLevel();
+        this.refreshEvents(this.filteredDataset);    
     }
 
     private prepareData() {

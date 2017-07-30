@@ -2,7 +2,10 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { EventsService } from './events.service'
 
+
 import * as negate from 'lodash.negate';
+
+
 
 @Component({
   selector: 'viz-view',
@@ -28,6 +31,8 @@ export class VizViewComponent {
 
     @Output() selectedPlayerEmitter = new EventEmitter(); 
 
+
+   
 
 
     flags = {
