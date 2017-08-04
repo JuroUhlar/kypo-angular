@@ -1,6 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { D3Service, D3, Selection } from 'd3-ng2-service'; // <-- import the D3 Service, the type alias for the d3 variable and the Selection interface
-import {HostListener} from '@angular/core';
+import { HostListener } from '@angular/core';
+import d3_save_svg from 'd3-save-svg';
 
 var resizeId;
 
@@ -532,8 +533,19 @@ export class ChartComponent implements OnInit {
                                     .remove();
 
                     // console.log("Refresh finished");
+    }
 
-    }   
+    // Saves the current event selection as a SVG file
+    saveSVG() {
+        console.log("Saving as svg...");
+        var config = {
+            filename: 'customFileName',
+        }
+        d3_save_svg.save(this.svg.node(), config);
+        // this.svg.
+    }
+
+
 }
 
 
