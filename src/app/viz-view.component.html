@@ -3,7 +3,7 @@
     <!--Selected game: <b>{{gameId}}</b>-->
 
     <!--<div id="chart"> </div>-->
-    <app-chart
+    <app-chart #chart
         [gameID]="gameId"
         [originalDataset]="originalDataset"
         [filteredDataset]="filteredDataset"
@@ -81,6 +81,8 @@
                     <option *ngFor="let level of levels" [value]="level">Level {{level}} </option>
                     <option *ngFor="let level of levels" [value]="level + ' shift'">Level {{level}} - logical time</option>
                 </select>
+
+                <button type="button" (click)="chart.saveSVG()">Save as SVG</button>
            
             </div>
     </form>
