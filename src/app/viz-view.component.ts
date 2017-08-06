@@ -2,7 +2,6 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { EventsService } from './events.service'
 
-
 import * as negate from 'lodash.negate';
 
 
@@ -31,8 +30,6 @@ export class VizViewComponent {
 
     @Output() selectedPlayerEmitter = new EventEmitter(); 
 
-
-   
 
 
     flags = {
@@ -180,8 +177,8 @@ export class VizViewComponent {
 
     private resetUI() {
         this.showLines = true;
-        this.xAxis = true;
-        this.yAxis = true;
+        // this.xAxis = true;
+        // this.yAxis = true;
         this.level = "a";
         this.selectedLevel="all";
         this.useLogicalTime = false;

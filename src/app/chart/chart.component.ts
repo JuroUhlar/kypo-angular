@@ -94,12 +94,9 @@ export class ChartComponent implements OnInit {
 
 
   ngOnChanges() {
-            console.log("chart ngOnChanges");
+            // console.log("chart ngOnChanges");
             if(this.change === "axis"){
-                console.log("Changing axis", this.xAxis, this.yAxis);
-                let d3 = this.d3;
-                d3.select("#xAxis").attr("display",this.xAxis ? "block" : "none");
-                d3.select("#yAxis").style("display",this.yAxis ? "block" : "none");
+                this.changeAxis();
                 return;
             }
 
@@ -141,9 +138,10 @@ export class ChartComponent implements OnInit {
                 try{
                     this.prepareData();
                     this.generateScalesAndAxis();
+                    this.changeAxis();
                     // this.refreshLines(this.filteredDataset);
                     // this.refreshEvents(this.filteredDataset);
-                    this.renderLinesForCurrentLevel(); // renders just lines insteaf of the entire dataset
+                    this.renderLinesForCurrentLevel(); // renders just lines instead of the entire dataset
                 } catch (e) {
                     console.log("Visualization failed. Please check the integrity of your data.");
                 }
@@ -171,12 +169,14 @@ export class ChartComponent implements OnInit {
             .append("svg")
             .attr("height", this.height)
             .attr("width", this.width);
+            this.svg.append("g").attr("id", "grid")
             this.svg.append("g").attr("id", "lines")
             this.svg.append("g").attr("id", "circles")
     }
 
     private resetSvg() {
             this.svg.selectAll("*").remove();
+            this.svg.append("g").attr("id", "grid")
             this.svg.append("g").attr("id", "lines");
             this.svg.append("g").attr("id", "circles");
     }
@@ -187,6 +187,15 @@ export class ChartComponent implements OnInit {
             this.previousLogicalTime = false;
             this.players = [];
             this.startTimes = [];
+    }
+
+    private changeAxis() {
+        console.log("Changing axis", this.xAxis, this.yAxis);
+        let d3 = this.d3;
+        d3.select("#xAxis").attr("display",this.xAxis ? "block" : "none");
+        d3.select("#yAxis").style("display",this.yAxis ? "block" : "none");
+        // Show grid when x axis is shown 
+        d3.select("#grid").attr("display",this.xAxis ? "block" : "none");
     }
 
     
@@ -239,6 +248,8 @@ export class ChartComponent implements OnInit {
     private generateScalesAndAxis() {
         let d3 = this.d3;
         //*********** SCALES **********************
+
+        // Find the time of latest event
         var latestEventTime = 0; 
         this.originalDataset.forEach( (d) => {
             if(d.game_seconds > latestEventTime) {
@@ -276,7 +287,16 @@ export class ChartComponent implements OnInit {
         var ticks = document.getElementsByClassName("tick");
         for(var i = 0; i<ticks.length; i++) {
         ticks[i].childNodes[1].textContent = toHHMMSS(ticks[i].childNodes[1].textContent).slice(0,5)+"h";
-        }
+    }
+    
+       // generate a vertical grid
+         var gridlines = d3.axisBottom(this.xScale)
+                    .tickFormat(d3.format(""))
+                    .tickValues(d3.range(900,this.xScale.domain()[1],900)) // Make ticks every 15 minutes (900 seconds), from 0 to latest event - upper bound of xScale domain
+                    .tickSize(this.height - this.padding_vertical);
+
+        this.svg.select("#grid")
+             .call(gridlines);            
 
         // Generate Y Axis 
         var playerLabels = this.svg.append("g")
@@ -297,9 +317,6 @@ export class ChartComponent implements OnInit {
             .attr("class", "player-label")
             .attr("style", "cursor: pointer")
             .on("click",  () => { 
-                // alert("Click on player " + d + "!"); 
-                // let selector = <HTMLSelectElement>document.getElementById("playerSelector");
-                // selector.value = d;
                 this.selectedPlayer = d;
                 this.changePlayer();
              });
