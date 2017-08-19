@@ -29,6 +29,19 @@ svg circle.help-level {
     fill: purple;
 }
 
+/*dont display tick values for the grid*/
+svg #grid .tick text { 
+    display: none; 
+}
+svg #grid .tick line {
+    stroke: #d3d3d3;
+    width: 1;
+}
+
+svg #grid .domain {
+    display: none;
+}
+
 
 div.tooltip {	
     position: absolute;			

@@ -12,3 +12,6 @@ div.tooltip {
     border-radius: 8px;			
     pointer-events: none;			
 }
+
+/* All svg styles are in the global styles.css file, */
+/* as having them here doesn't work for some reason :( */

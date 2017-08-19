@@ -4,6 +4,8 @@ import { EventsService } from './events.service'
 
 import * as negate from 'lodash.negate';
 
+
+
 @Component({
   selector: 'viz-view',
   templateUrl: './viz-view.component.html',
@@ -175,8 +177,8 @@ export class VizViewComponent {
 
     private resetUI() {
         this.showLines = true;
-        this.xAxis = true;
-        this.yAxis = true;
+        // this.xAxis = true;
+        // this.yAxis = true;
         this.level = "a";
         this.selectedLevel="all";
         this.useLogicalTime = false;

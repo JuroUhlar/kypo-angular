@@ -1,13 +1,19 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { D3Service, D3, Selection } from 'd3-ng2-service'; // <-- import the D3 Service, the type alias for the d3 variable and the Selection interface
+import { HostListener } from '@angular/core';
+import d3_save_svg from 'd3-save-svg';
 
-// import * as d3 from 'd3';
+var resizeId;
 
 @Component({
   selector: 'app-chart',
   templateUrl: './chart.component.html',
   styleUrls: ['./chart.component.css']
 })
+
+
+
+
 export class ChartComponent implements OnInit {
   
    @Input() originalDataset; 
@@ -23,6 +29,17 @@ export class ChartComponent implements OnInit {
 
    @Output() selectedPlayerEmitter = new EventEmitter();
 
+    // Add an event listener for window resize
+    // Triggers handler only after the resizing is finished (no change in windows size for 800ms).
+    @HostListener('window:resize', ['$event'])
+        onResize() {
+            // this.finishedResizing();
+            clearTimeout(resizeId); 
+            resizeId = setTimeout(() => {this.finishedResizing();}, 800);
+    }
+
+
+
     private d3: D3;
     
     private svg = null;
@@ -35,7 +52,9 @@ export class ChartComponent implements OnInit {
 
     private SvgInitialized = false;
 
-    private previousLogicalTime : boolean ;
+    private previousLogicalTime : boolean;
+
+
 
 
 
@@ -77,10 +96,7 @@ export class ChartComponent implements OnInit {
   ngOnChanges() {
             // console.log("chart ngOnChanges");
             if(this.change === "axis"){
-                console.log("Changing axis", this.xAxis, this.yAxis);
-                let d3 = this.d3;
-                d3.select("#xAxis").attr("display",this.xAxis ? "block" : "none");
-                d3.select("#yAxis").style("display",this.yAxis ? "block" : "none");
+                this.changeAxis();
                 return;
             }
 
@@ -122,9 +138,10 @@ export class ChartComponent implements OnInit {
                 try{
                     this.prepareData();
                     this.generateScalesAndAxis();
+                    this.changeAxis();
                     // this.refreshLines(this.filteredDataset);
                     // this.refreshEvents(this.filteredDataset);
-                    this.renderLinesForCurrentLevel(); // renders just lines insteaf of the entire dataset
+                    this.renderLinesForCurrentLevel(); // renders just lines instead of the entire dataset
                 } catch (e) {
                     console.log("Visualization failed. Please check the integrity of your data.");
                 }
@@ -152,12 +169,14 @@ export class ChartComponent implements OnInit {
             .append("svg")
             .attr("height", this.height)
             .attr("width", this.width);
+            this.svg.append("g").attr("id", "grid")
             this.svg.append("g").attr("id", "lines")
             this.svg.append("g").attr("id", "circles")
     }
 
     private resetSvg() {
             this.svg.selectAll("*").remove();
+            this.svg.append("g").attr("id", "grid")
             this.svg.append("g").attr("id", "lines");
             this.svg.append("g").attr("id", "circles");
     }
@@ -168,6 +187,31 @@ export class ChartComponent implements OnInit {
             this.previousLogicalTime = false;
             this.players = [];
             this.startTimes = [];
+    }
+
+    private changeAxis() {
+        console.log("Changing axis", this.xAxis, this.yAxis);
+        let d3 = this.d3;
+        d3.select("#xAxis").attr("display",this.xAxis ? "block" : "none");
+        d3.select("#yAxis").style("display",this.yAxis ? "block" : "none");
+        // Show grid when x axis is shown 
+        d3.select("#grid").attr("display",this.xAxis ? "block" : "none");
+    }
+
+    
+    // React to window being resized
+    private finishedResizing() {
+        console.log(`The windows has just been resized!`);
+        this.width = window.innerWidth - 40; // Dynamically set width to make sure diagram always fits on page
+        this.height = window.innerHeight - 180; // Dynamically set height
+
+        this.resetSvg();
+         this.svg.attr("height", this.height)
+                 .attr("width", this.width);
+        // this.initSvg();
+        this.generateScalesAndAxis();
+        this.renderLinesForCurrentLevel();
+        this.refreshEvents(this.filteredDataset);    
     }
 
     private prepareData() {
@@ -204,6 +248,8 @@ export class ChartComponent implements OnInit {
     private generateScalesAndAxis() {
         let d3 = this.d3;
         //*********** SCALES **********************
+
+        // Find the time of latest event
         var latestEventTime = 0; 
         this.originalDataset.forEach( (d) => {
             if(d.game_seconds > latestEventTime) {
@@ -241,7 +287,16 @@ export class ChartComponent implements OnInit {
         var ticks = document.getElementsByClassName("tick");
         for(var i = 0; i<ticks.length; i++) {
         ticks[i].childNodes[1].textContent = toHHMMSS(ticks[i].childNodes[1].textContent).slice(0,5)+"h";
-        }
+    }
+    
+       // generate a vertical grid
+         var gridlines = d3.axisBottom(this.xScale)
+                    .tickFormat(d3.format(""))
+                    .tickValues(d3.range(900,this.xScale.domain()[1],900)) // Make ticks every 15 minutes (900 seconds), from 0 to latest event - upper bound of xScale domain
+                    .tickSize(this.height - this.padding_vertical);
+
+        this.svg.select("#grid")
+             .call(gridlines);            
 
         // Generate Y Axis 
         var playerLabels = this.svg.append("g")
@@ -262,9 +317,6 @@ export class ChartComponent implements OnInit {
             .attr("class", "player-label")
             .attr("style", "cursor: pointer")
             .on("click",  () => { 
-                // alert("Click on player " + d + "!"); 
-                // let selector = <HTMLSelectElement>document.getElementById("playerSelector");
-                // selector.value = d;
                 this.selectedPlayer = d;
                 this.changePlayer();
              });
@@ -499,8 +551,19 @@ export class ChartComponent implements OnInit {
                                     .remove();
 
                     // console.log("Refresh finished");
+    }
 
-    }   
+    // Saves the current event selection as a SVG file
+    saveSVG() {
+        console.log("Saving as svg...");
+        var config = {
+            filename: 'customFileName',
+        }
+        d3_save_svg.save(this.svg.node(), config);
+        // this.svg.
+    }
+
+
 }
 
 
