@@ -27,6 +27,7 @@
     "core-js": "^2.4.1",
     "d3": "^4.7.4",
     "d3-ng2-service": "^1.8.0",
+    "d3-save-svg": "0.0.2",
     "lodash.negate": "^3.0.2",
     "ng-sidebar": "^4.2.1",
     "rxjs": "^5.1.0",
