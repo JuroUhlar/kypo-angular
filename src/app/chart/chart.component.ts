@@ -446,8 +446,7 @@ export class ChartComponent implements OnInit {
                     })
                     .attr("stroke-width", "1")
                     .attr("stroke", "grey")
-                    // .attr("opacity", "0.5")
-
+                    // Add event handlers for custom tooltip behavior
                     .on("mouseover", (d) => {		
                         div.transition()		
                             .duration(200)		
@@ -464,17 +463,19 @@ export class ChartComponent implements OnInit {
                         div.transition()		
                             .duration(500)		
                             .style("opacity", 0);	
-                    })
-
-                    .append("title")
-                    .text((d) => {
-                    // .attr("title", (d) => {
-                        return  "Event: " + d.event + "\n" +
-                                "Player " + this.players.indexOf(d.ID) + " (" + d.ID + ") \n" + 
-                                "Level: " + d.level + "\n" +
-                                "Level time: " + d.logical_time + "\n" + 
-                                "Game time: " + toHHMMSS(d.game_seconds);  
                     });
+
+                    // Append title using the native title attribute and native browser behavior
+
+                    // .append("title")
+                    // .text((d) => {
+                    // // .attr("title", (d) => {
+                    //     return  "Event: " + d.event + "\n" +
+                    //             "Player " + this.players.indexOf(d.ID) + " (" + d.ID + ") \n" + 
+                    //             "Level: " + d.level + "\n" +
+                    //             "Level time: " + d.logical_time + "\n" + 
+                    //             "Game time: " + toHHMMSS(d.game_seconds);  
+                    // });
 
                     enteringCircles.attr("r", "0")
                             .transition()
