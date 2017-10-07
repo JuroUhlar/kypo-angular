@@ -7,7 +7,8 @@ export class EventsService {
   constructor(private http: Http) {}
 
   // private baseURL = "http://localhost:5000";
-  private baseURL = "http://kypo2-uhlar.rhcloud.com";
+  // private baseURL = "http://kypo2-uhlar.rhcloud.com";
+  private baseURL = "https://kypo.herokuapp.com";
   
 
 

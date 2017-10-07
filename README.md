@@ -4,6 +4,12 @@ Developed by Juraj Uhlár, under MIT Licence.
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 1.0.0. 
 
+## Demo
+
+Demo is available at [http://kypo-viz.surge.sh/](http://kypo-viz.surge.sh/). 
+
+![alt text](https://image.prntscr.com/image/gQhmvp4hTqG5bji58rFHsw.png "Kypo ctf events vizualization")
+
 
 ## Development server
 

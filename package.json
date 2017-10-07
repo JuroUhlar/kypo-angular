@@ -33,7 +33,6 @@
     "d3-save-svg": "0.0.2",
     "font-awesome": "^4.7.0",
     "lodash.negate": "^3.0.2",
-    // "ng-sidebar": "^4.2.1", not needed anymore
     "rxjs": "^5.1.0",
     "typescript": "^2.2.2",
     "zone.js": "^0.8.4"

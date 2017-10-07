@@ -1,2 +1,2 @@
-surge --domain kypo-viz.surge.sh --project ./dist/
+ng build --prod && surge --domain kypo-viz.surge.sh --project ./dist/
 pause
