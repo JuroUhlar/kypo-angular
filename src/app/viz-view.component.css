@@ -10,5 +10,17 @@ svg text.player-label {
 
 .checkboxes label {
    margin-right: 20px;
+   display: inline;
 }
+
+/* Defensive style to avoid misalignment in Liferay */
+input[type=checkbox] {
+  margin-top: 0px;
+}
+
+#UIrow2 label {
+  display: inline;
+}
+
+
 

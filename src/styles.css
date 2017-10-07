@@ -10,7 +10,7 @@ svg circle {
 }
 
 svg circle:hover {
-    /*fill: red !important;*/
+
     stroke: black;
     stroke-width: 2;
     opacity: 1.00;
@@ -29,7 +29,7 @@ svg circle.help-level {
     fill: purple;
 }
 
-/*dont display tick values for the grid*/
+
 svg #grid .tick text { 
     display: none; 
 }
@@ -46,12 +46,14 @@ svg #grid .domain {
 div.tooltip {	
     position: absolute;			
     text-align: left;			
-    /*width: 240px;					*/
-    /*height: 28px;					*/
     padding: 4px;				
     font: 12px sans-serif;		
     background: lightsteelblue;	
     border: 0px;		
     border-radius: 8px;			
     pointer-events: none;			
+}
+
+body, html {
+    height: 100%;
 }

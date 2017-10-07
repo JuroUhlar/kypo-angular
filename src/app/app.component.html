@@ -1,74 +1,58 @@
 
 
-<!--Navigation at the top-->
-<nav role="navigation" class="navbar navbar-inverse navbar-fixed-top">
-    <!--<div class="navbar-header">         -->
-        <a class="navbar-brand" (click)="_toggleSidebar()" style="cursor:pointer" title="Main menu with datasets">
-            <span class="glyphicon glyphicon-menu-hamburger" aria-hidden="true" style="color: white"></span>
-        </a>
-        <span class="kypo-title">
-             <a class="navbar-brand" href="javascript:window.location.reload(true)" title="Reloads app">
-            {{title}}
-            </a>
-        </span>
-       
-    <!--</div>-->
+<md-sidenav-container class="kypoviz-container">
 
-     <div class="navbar-right kypo-navbar-right">
-        Selected game: <a (click)="_toggleSidebar()">{{selectedGame}}</a>
-    </div>             
-</nav>
+    <!-- Menu sidebar  -->
+    <md-sidenav #sidenav class="kypoviz-sidenav" (click)="sidenav.close()" [(opened)]="_opened">
 
+        <kypo-menu (selectDataset)="onSelectDataset($event)" [selectedPlayer]="selectedPlayer">
+        </kypo-menu>
 
- <ng-sidebar-container>
+    </md-sidenav>
 
-      <!-- A sidebar -->
-      <ng-sidebar [(opened)]="_opened"
-                    [closeOnClickOutside]=true
-                    (click)="_closeSidebar()">
+    <!-- Rest of the page -->
+    <div class="kypoviz-sidenav-content" >
 
-                <div class="menu-wrapper">
-                        <!--Menu component-->
-                        <kypo-menu
-                            (selectDataset)="onSelectDataset($event)"
-                            [selectedPlayer]="selectedPlayer">
-                        </kypo-menu>
+        <!-- Navigation bar at the top -->
+      <nav role="navigation" class="kypoviz-navbar">
+            <a class="" (click)="sidenav.open()" style="cursor:pointer" title="Main menu with datasets">
+                <i class="fa fa-bars kypoviz-navbar-hamburger-icon" aria-hidden="true"></i>
+             </a>
+            <span class="kypoviz-navbar-title">
+                <a class="" href="javascript:window.location.reload(true)" title="Reloads app">
+                    {{title}}
+                </a>
+            </span>
+
+            <div class="kypoviz-navbar-rightside">
+                Selected game: <a (click)="sidenav.toggle()">{{selectedGame}}</a>
+            </div>
+        </nav>
+
+        <!-- Content  -->
+        <div id="content-wrapper">
+                <div *ngIf="selectedGame === 'none'">
+                    <h2>Welcome</h2>
+                    <p>Thank you for testing this prototype visualization of a run of a KYPOlab security game. </p>
+                    <p> <span style="font-weight: bold"> If you are here as a tester, please fill in your name in the text field below.</span>                If will help us identify the record of your session. </p>
+                    <div class="form-inline">
+                        <label style="font-weight: normal" class="col-2 col-form-label">Name:</label>
+                        <input class="form-control" type="text" value="" id="example-text-input">
+                    </div>
+
+                    <h4 style="margin-top: 40px"> User testing form </h4>
+                    <p> User testing consists of 4 short tasks followed up by a few questions asking for your feedback, all in a single
+                        <a href="https://goo.gl/forms/NKJoux07z1Qf3bJ32" target="_blank" style="font-weight: bold"> online form available here.</a>
+                        <p>
+
+                            <h4 style="margin-top: 40px">Contact</h4>
+                            <p>If you have any questions, or want to contact the author, write to Juraj Uhlár at <i>422160@mail.muni.cz</i>
                 </div>
-      </ng-sidebar>
 
-       <div class="viz-wrapper">
-           <!--viz view component-->
+                <viz-view *ngIf="selectedGame != 'none'" [gameId]="selectedGame" (selectedPlayerEmitter)="onSelectPlayer($event)">
 
-        <div *ngIf="selectedGame === 'none'">
-            <h2>Welcome</h2>
-            <p>Thank you for testing this prototype visualization of a run of a KYPOlab security game.  </p>
-            <p> <span style="font-weight: bold"> If you are here as a tester, please fill in your name in the text field below.</span> If will help us identify the record of your session. </p>
-                <div class="form-inline">
-                    <label style="font-weight: normal" class="col-2 col-form-label">Name:</label>
-                    <input class="form-control" type="text" value="" id="example-text-input">    
-                </div>
-            
-            <h4 style="margin-top: 40px"> User testing form </h4> 
-            <p> User testing consists of 4 short tasks followed up by a few questions asking for your feedback, all in a single
-                <a href="https://goo.gl/forms/NKJoux07z1Qf3bJ32" target="_blank" style="font-weight: bold"> online form available here.</a> <p>
+                </viz-view>
+        </div>
+    </div>
 
-            <h4 style="margin-top: 40px">Contact</h4>
-            <p>If you have any questions, or want to contact the author, write to Juraj Uhlár at <i>422160@mail.muni.cz</i>
-        </div>   
-
-        <viz-view *ngIf="selectedGame != 'none'"
-            [gameId]="selectedGame"
-            (selectedPlayerEmitter)="onSelectPlayer($event)">
-        </viz-view>
-       </div>
-
-  
-</ng-sidebar-container>
-
-
-
-
- 
-
-
-
+</md-sidenav-container>

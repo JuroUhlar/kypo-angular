@@ -3,51 +3,105 @@
     height: 100%;
     padding-top: 10px;
     background-color: #424242;
-    /*min-height: 500px;*/
-    /*margin-right: 20px;*/
 }
 
 .viz-wrapper {
     background-color: white;
-    /*float: left;*/
-    padding-left: 20px;
-    padding-right: 20px;
-    padding-bottom: 10px;
-    padding-top: 60px;
-    /*min-width: 65%; */
-    /*min-height: 400px;*/
+    padding-left: 0px;
+    padding-right: 0px;
+    padding-bottom: 0px;
+    padding-top: 0px;
+
 }
 
-.kypo-navbar-right {
-    float: right;
+#content-wrapper {
+    padding: 20px;
+}
+
+.kypoviz-navbar {
+    background-color: #222;
+    height: 50px;
+    font-size: 18px;
+    color: #9d9d9d;
+}
+
+.kypoviz-navbar-hamburger-icon {
+    color: white;
+    font-size: 18px;
+    display: inline-block;
+    float: left;
+    padding: 15px;
+}
+ 
+
+.kypoviz-navbar-title {
+    float: left;
     height: 50px;
     padding: 15px 15px;
     font-size: 18px;
     line-height: 20px;
     color: #9d9d9d;
-    margin-right: 20px;
-    font-size: 15px;
 }
 
-.kypo-navbar-right a:hover {
+.kypoviz-navbar-title a {
+    font-size: 18px;
+    text-decoration: none;
+    color: #9d9d9d;
+}
+
+
+.kypoviz-navbar-rightside {
+    float: right;
+    height: 50px;
+    padding: 15px 15px;
+    font-size: 15px;
+    line-height: 20px;
+    color: #9d9d9d;
+    margin-right: 20px;
+    font-size: 15px;
+    text-decoration: none;
+}
+
+.kypoviz-navbar-rightside a:hover {
     color: white;
     text-decoration: none;
     cursor: pointer;
 }
 
-.navbar {
+.kypoviz-navbar {
     white-space: nowrap !important;
 }
 
 @media (max-width: 600px) {
-  .kypo-title {
+  .kypoviz-navbar-title {
     display: none;
+    font-size: 22px;
   }
 }
-
 
 @media (max-width: 300px) {
-  .kypo-navbar-right {
+  .kypoviz-navbar-rightside {
     display: none;
   }
 }
+
+
+.kypoviz-container {
+    width: 100%;
+    height: 100%;
+    border: 1px solid rgba(0, 0, 0, 0.5);
+    /* margin-left: 50px; */
+    /* margin-top: 50px; */
+  }
+  
+  .kypoviz-sidenav-content {
+    display: block;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .kypoviz-sidenav {
+    width: 20%;
+    background-color:#505050;
+  }

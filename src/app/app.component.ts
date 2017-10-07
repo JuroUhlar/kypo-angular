@@ -20,6 +20,7 @@ export class AppComponent {
           // console.log("Parent component received " + game);
           this.selectedGame = game;
     }
+    
     // closes sidebar
     // this._closeSidebar();
   }

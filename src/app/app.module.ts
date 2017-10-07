@@ -2,6 +2,8 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { MdSidenavModule, MdDialogModule } from '@angular/material';
 
 import { D3Service } from 'd3-ng2-service';
 
@@ -11,7 +13,7 @@ import { EventsService } from './events.service';
 import { VizViewComponent } from './viz-view.component';
 import { ChartComponent } from './chart/chart.component';
 
-import { SidebarModule } from 'ng-sidebar';
+import { AngularFontAwesomeModule } from 'angular-font-awesome/angular-font-awesome'
 
 
 @NgModule({
@@ -25,7 +27,10 @@ import { SidebarModule } from 'ng-sidebar';
     BrowserModule,
     FormsModule,
     HttpModule,
-    SidebarModule.forRoot()
+    AngularFontAwesomeModule,
+    MdSidenavModule,
+    MdDialogModule,
+    BrowserAnimationsModule
   ],
   providers: [EventsService, D3Service],
   bootstrap: [AppComponent]
