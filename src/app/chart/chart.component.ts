@@ -1,7 +1,8 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { D3Service, D3, Selection } from 'd3-ng2-service'; // <-- import the D3 Service, the type alias for the d3 variable and the Selection interface
+// import { D3Service, D3, Selection } from 'd3-ng2-service'; // <-- import the D3 Service, the type alias for the d3 variable and the Selection interface
+import * as d3 from 'd3';
 import { HostListener } from '@angular/core';
-import d3_save_svg from 'd3-save-svg';
+import * as d3_save_svg from 'd3-save-svg';
 
 var resizeId;
 
@@ -38,7 +39,7 @@ export class ChartComponent implements OnInit {
         resizeId = setTimeout(() => { this.finishedResizing(); }, 800);
     }
 
-    private d3: D3;
+    private d3;
 
     private svg = null;
 
@@ -47,8 +48,16 @@ export class ChartComponent implements OnInit {
 
     private xScale;
     private yScale;
+    private xAxisfunction;
+    private yAxisfunction;
+    private gridlinesFunction;
+
 
     private SvgInitialized = false;
+
+    private zoomBehXY;
+    private zoomBehX;
+    private zoomYAxis: boolean = true;
 
     private previousLogicalTime: boolean;
 
@@ -63,24 +72,24 @@ export class ChartComponent implements OnInit {
     // experiment
     selectedPlayer = "none";
 
-    constructor(d3Service: D3Service) {
-        this.d3 = d3Service.getD3(); // <-- obtain the d3 object from the D3 Service
+    constructor() {
+        // this.d3 = d3Service.getD3(); // <-- obtain the d3 object from the D3 Service
+        this.d3 = d3;
         this.updateHeightAndWidth();
     }
 
     // experiment
     changePlayer() {
-        console.log("changing player");
+        // console.log("changing player");
         this.selectedPlayerEmitter.emit(this.selectedPlayer);
     }
 
     ngOnInit() {
         this.gameID = "";
-        this.color = this.d3.scaleOrdinal()
+        this.color = this.d3.scale.ordinal()
             // .range(this.d3.schemeCategory10)
             .range(["#AEC7E8", "#FFBB78", "#98DF8A", "#C49C94", "#9EDAE5", "#DBDB8D"])
             .domain(this.d3.range(1, 10).map(x => x + "")); // Color palette generator, give it a number, it gives you a color )
-
     }
 
     ngOnChanges() {
@@ -101,9 +110,7 @@ export class ChartComponent implements OnInit {
         }
 
         if (this.change === "level") {
-            console.log("**************** [chart] changing level!");
-            // console.log("[chart]: change = level"); 
-            // console.log("[chart]: use logical time:", this.useLogicalTime);
+            // console.log("**************** [chart] changing level!");
             if (this.previousLogicalTime != this.useLogicalTime) {
                 this.svg.selectAll("circle").remove();
                 this.svg.selectAll(".level-line").remove();
@@ -122,7 +129,7 @@ export class ChartComponent implements OnInit {
         }
 
         if (this.change === "game") {
-            console.log("********************** Visualizing a new game!");
+            // console.log("********************** Visualizing a new game!");
             this.resetSvg();
             this.resetVariables();
             try {
@@ -134,12 +141,13 @@ export class ChartComponent implements OnInit {
                 this.renderLinesForCurrentLevel(); // renders just lines instead of the entire dataset
             } catch (e) {
                 console.log("Visualization failed. Please check the integrity of your data.");
+                console.log(e);
             }
             return;
         }
 
         if (!this.svg) {
-            console.log("Initializing svg");
+            // console.log("Initializing svg");
             this.initSvg();
         }
     }
@@ -159,6 +167,7 @@ export class ChartComponent implements OnInit {
     }
 
     private initSvg() {
+        // console.log("InitSVG");
         let d3 = this.d3;
         this.svg = d3.select('#chart')
             .append("svg")
@@ -170,6 +179,7 @@ export class ChartComponent implements OnInit {
     }
 
     private resetSvg() {
+        this.d3.select("body").selectAll(".tooltip").remove();
         this.svg.selectAll("*").remove();
         this.svg.append("g").attr("id", "grid")
         this.svg.append("g").attr("id", "lines");
@@ -177,7 +187,7 @@ export class ChartComponent implements OnInit {
     }
 
     private resetVariables() {
-        console.log("resetVariables()");
+        // console.log("resetVariables()");
         this.useLogicalTime = false;
         this.previousLogicalTime = false;
         this.players = [];
@@ -185,7 +195,7 @@ export class ChartComponent implements OnInit {
     }
 
     private changeAxis() {
-        console.log("Changing axis", this.xAxis, this.yAxis);
+        // console.log("Changing axis", this.xAxis, this.yAxis);
         let d3 = this.d3;
         d3.select("#xAxis").attr("display", this.xAxis ? "block" : "none");
         d3.select("#yAxis").style("display", this.yAxis ? "block" : "none");
@@ -196,7 +206,7 @@ export class ChartComponent implements OnInit {
 
     // React to window being resized
     private finishedResizing() {
-        console.log(`The windows has just been resized!`);
+        // console.log(`The windows has just been resized!`);
         this.updateHeightAndWidth();
 
         this.resetSvg();
@@ -242,7 +252,6 @@ export class ChartComponent implements OnInit {
     private generateScalesAndAxis() {
         let d3 = this.d3;
         //*********** SCALES **********************
-
         // Find the time of latest event
         var latestEventTime = 0;
         this.originalDataset.forEach((d) => {
@@ -251,31 +260,42 @@ export class ChartComponent implements OnInit {
             }
         });
 
-        this.xScale = d3.scaleLinear()
+        this.xScale = d3.scale.linear()
             .domain([0, latestEventTime]) // X domain boundury defined by the latest event
             .range([this.padding_horizontal + this.extra_left_padding, this.width - this.padding_horizontal]); // set by dimensions of SVG - padding                                    
 
-
-
-        this.yScale = d3.scaleLinear() // accept players index in array
+        this.yScale = d3.scale.linear() // accept players index in array
             .domain([0, this.players.length])    // Y domain boundaty defined by number of players
             .range([this.padding_vertical, this.height - this.padding_vertical]);
         // .nice(); 
 
         //************AXIS ******************************
-        var xAxis = d3.axisBottom(this.xScale)
+        this.xAxisfunction = d3.svg.axis()
+            .orient("bottom")
             .scale(this.xScale)
-            .ticks(d3.timeMinute.every(15))
-            .tickValues(d3.range(0, this.xScale.domain()[1], 900).concat([latestEventTime])) // Make ticks every 15 minutes (900 seconds), from 0 to latest event - upper bound of xScale domain
+            .ticks(5)
+            // .tickValues(d3.range(0, xScale.domain()[1], 900)) // Make ticks every 15 minutes (900 seconds), from 0 to latest event - upper bound of xScale domain
             .tickFormat(d3.format("d")); //remove "," from format to make it easier to convert to HH:MM:SS  
 
+
         //Generate X axis
-        this.svg.append("g")
+        var xAxisGroup = this.svg.append("g")
             .attr("class", "axis")
             .attr("transform", "translate(0, " + (this.height - this.padding_vertical) + ")")
             .attr("id", "xAxis")
-            .call(xAxis);
 
+
+        // Dummy rectangle to prevent overlapping of data with X axis
+        xAxisGroup
+            .append("rect")
+            .attr("x", 0)
+            .attr("y", 0)
+            .attr("height", 40)
+            .attr("width", this.width)
+            .attr("style", "fill:white");;
+
+        // Generate X axis
+        xAxisGroup.call(this.xAxisfunction);
 
         // Reformat X axis TICKS to show time in readable format    
         var ticks = document.getElementsByClassName("tick");
@@ -284,25 +304,34 @@ export class ChartComponent implements OnInit {
         }
 
         // generate a vertical grid
-        var gridlines = d3.axisBottom(this.xScale)
+        this.gridlinesFunction = d3.svg.axis()
+            .orient("bottom")
+            .scale(this.xScale)
             .tickFormat(d3.format(""))
-            .tickValues(d3.range(900, this.xScale.domain()[1], 900)) // Make ticks every 15 minutes (900 seconds), from 0 to latest event - upper bound of xScale domain
+            // .tickValues(d3.range(900, this.xScale.domain()[1], 900)) // Make ticks every 15 minutes (900 seconds), from 0 to latest event - upper bound of xScale domain
+            .ticks(5)
             .tickSize(this.height - this.padding_vertical);
 
         this.svg.select("#grid")
-            .call(gridlines);
+            .call(this.gridlinesFunction);
 
         // Generate Y Axis 
-        var playerLabels = this.svg.append("g")
+        var yAxisGroup = this.svg.append("g")
             .attr("class", "axis")
             .attr("id", "yAxis");
-        // .attr("style", "display: none");
+
+        // Dummy rectangle to prevent overlapping of data with Y axis
+        yAxisGroup.append("rect")
+            .attr("x", 0)
+            .attr("y", 0)
+            .attr("height", this.height)
+            .attr("width", 60)
+            .attr("style", "fill:white; stroke-width: 1");
 
         this.players.forEach((d, i) => {
-            playerLabels.append("text")
-                .text(function () {
+            yAxisGroup.append("text")
+                .text(() => {
                     return "#" + i + " " + "[" + d + "]";
-
                 })
                 .attr("y", () => {
                     return this.yScale(i) + 4;
@@ -315,8 +344,38 @@ export class ChartComponent implements OnInit {
                     this.changePlayer();
                 });
         });
+
+        this.zoomBehXY = d3.behavior.zoom()
+            .x(this.xScale)
+            .y(this.yScale)
+            .scaleExtent([0.5, 8])
+            .on("zoom", () => {
+                this.zoom();
+            });
+
+        this.zoomBehX = d3.behavior.zoom()
+            .x(this.xScale)
+            .scaleExtent([0.5, 8])
+            .on("zoom", () => {
+                this.zoom();
+            });
+
+        if (this.zoomYAxis) {
+            this.svg.call(this.zoomBehXY);
+        } else {
+            this.svg.call(this.zoomBehX);
+        }
     }
 
+
+    public toggleZoomYAxis() {
+        // console.log("Toggle zoom Y axis");
+        if (this.zoomYAxis) {
+            this.svg.call(this.zoomBehX);
+        } else {
+            this.svg.call(this.zoomBehXY);
+        }
+    }
 
     private isEndOfLevelEvent(d) {
         // if(!d) return true;
@@ -343,9 +402,9 @@ export class ChartComponent implements OnInit {
             }
         });
 
-        console.log(lastEventsOfUnfinishedLevels);
+        // console.log(lastEventsOfUnfinishedLevels);
 
-        console.log("Refreshing lines!");
+        // console.log("Refreshing lines!");
         //***********************************************
         // LINES CERRESPONDING TO DURATION OF EACH LEVEL 
         var lines = this.svg.select("#lines").selectAll(".level-line")
@@ -374,7 +433,7 @@ export class ChartComponent implements OnInit {
             .attr("x1", (d, i) => { // X coodinate of first point set by game time of previous end-of-level event
                 var currentLevel = d.level;
                 var currentPlayer = d.ID;
-                var levelStart = this.originalDataset.filter(function (d) { // This craziness figures out what that event is (where this level starts)
+                var levelStart = this.originalDataset.filter((d) => { // This craziness figures out what that event is (where this level starts)
                     return (d.ID === currentPlayer) &&
                         (
                             (+d.level === +currentLevel - 1 &&
@@ -427,19 +486,21 @@ export class ChartComponent implements OnInit {
 
     private refreshEvents(dataset) {
 
-        console.log("Refreshing events!");
+        // console.log("Refreshing events!");
 
         //***********************************************    
         // CIRCLES CORRESPONDING TO ALL GAME EVENTS
 
         // Define the div for the tooltip
-        var div = this.d3.select("body").append("div")
-            .attr("class", "tooltip")
-            .style("opacity", 0);
+        var tooltipDiv = d3.select("body").select(".tooltip");
 
+        if (tooltipDiv.empty()) {
+            tooltipDiv = this.d3.select("body").append("div")
+                .attr("class", "tooltip")
+                .style("opacity", 0);
+        }
 
-
-        var circles = this.svg.selectAll("circle")
+        var circles = this.svg.select("#circles").selectAll("circle")
             .data(dataset, (d) => { return d.ID + d.game_seconds + d.event; });
 
         var enteringCircles = circles.enter()
@@ -487,14 +548,15 @@ export class ChartComponent implements OnInit {
                     return "help-level";
                 } else return "";
             })
+            .classed("event-circle", true)
             .attr("stroke-width", "1")
             .attr("stroke", "grey")
             // Add event handlers for custom tooltip behavior
             .on("mouseover", (d) => {
-                div.transition()
+                tooltipDiv.transition()
                     .duration(200)
                     .style("opacity", .9);
-                div.html("Event: " + d.event + "<br/>" +
+                tooltipDiv.html("Event: " + d.event + "<br/>" +
                     "Player " + this.players.indexOf(d.ID) + " (" + d.ID + ")" + "<br/>" +
                     "Level: " + d.level + "<br/>" +
                     "Level time: " + d.logical_time + "<br/>" +
@@ -502,8 +564,8 @@ export class ChartComponent implements OnInit {
                     .style("left", (this.d3.event.pageX - 120) + "px")
                     .style("top", (this.d3.event.pageY - 90) + "px");
             })
-            .on("mouseout", function (d) {
-                div.transition()
+            .on("mouseout", (d) => {
+                tooltipDiv.transition()
                     .duration(500)
                     .style("opacity", 0);
             });
@@ -540,7 +602,6 @@ export class ChartComponent implements OnInit {
             .duration(300)
             .attr("r", "0")
             .remove();
-
         // console.log("Refresh finished");
     }
 
@@ -551,7 +612,93 @@ export class ChartComponent implements OnInit {
             filename: 'customFileName',
         }
         d3_save_svg.save(this.svg.node(), config);
-        // this.svg.
+        this.resetZoom();
+    }
+
+    zoom() {
+        // console.log("zooming!");
+        var zoomYaxis = true;
+        var circlesToZoom = this.svg.selectAll(".event-circle")
+            .attr("cx", (d) => {
+                if (this.useLogicalTime) {
+                    return this.xScale(strTimeToSeconds(d.logical_time));
+                } else {
+                    return this.xScale(d.game_seconds);
+                }
+            });
+
+        if (zoomYaxis) {
+            circlesToZoom.attr("cy", (d) => {
+                return this.yScale(this.players.indexOf(d.ID));
+            });
+        }
+        var linesToZoom = this.svg.selectAll(".level-line")
+            .attr("x2", (d) => { // X coordinate set by game time
+                if (this.useLogicalTime) {
+                    return this.xScale(strTimeToSeconds(d.logical_time));
+                } else {
+                    return this.xScale(d.game_seconds);
+                }
+            })
+            .attr("x1", (d, i) => { // X coodinate of first point set by game time of previous end-of-level event
+                var currentLevel = d.level;
+                var currentPlayer = d.ID;
+                var levelStart = this.originalDataset.filter((d) => { // This craziness figures out what that event is (where this level starts)
+                    return (d.ID === currentPlayer) &&
+                        (
+                            (+d.level === +currentLevel - 1 &&
+                                (d.event === "Correct flag submited" ||
+                                    d.event === "Level cowardly skipped"))
+                            ||
+                            (currentLevel === "1" && d.event === "Game started")
+                        );
+                })[0];
+                // console.log(levelStart);
+                // return xScale(levelStart.game_seconds);
+                if (this.useLogicalTime) {
+                    return this.xScale(0);
+                } else {
+                    return this.xScale(levelStart.game_seconds);
+                }
+            });
+
+        if (zoomYaxis) {
+            linesToZoom
+                .attr("y1", (d) => { // Y coordinate set according to player index
+                    return this.yScale(this.players.indexOf(d.ID));
+                })
+                .attr("y2", (d) => { // Y coordinate set according to player index, again
+                    return this.yScale(this.players.indexOf(d.ID));
+                });
+        }
+
+        // Redraw Y axis
+        if (zoomYaxis) {
+            d3.selectAll(".player-label").attr("y", (d, i) => { return this.yScale(i) + 4; });
+        }
+        // Redraw X axis
+        this.svg.select("#xAxis").call(this.xAxisfunction);
+
+        this.svg.select("#grid")
+            .call(this.gridlinesFunction);
+
+
+        // Reformat X axis TICKS to show time in readable format    
+        var ticks = document.getElementsByClassName("tick");
+        for (var i = 0; i < ticks.length; i++) {
+            ticks[i].childNodes[1].textContent = toHHMMSS(ticks[i].childNodes[1].textContent).slice(0, 5) + "h";
+        }
+
+    }
+
+    public resetZoom() {
+        this.resetSvg();
+        // this.resetVariables();
+        // this.prepareData();
+        this.generateScalesAndAxis();
+        this.changeAxis();
+        this.renderLinesForCurrentLevel(); // renders just lines instead of the entire dataset
+        this.refreshEvents(this.filteredDataset);
     }
 
 

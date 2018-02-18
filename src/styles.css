@@ -57,3 +57,22 @@ div.tooltip {
 body, html {
     height: 100%;
 }
+
+svg .tick text {
+    font-size: 10px;
+    font-family: Arial, sans-serif;
+}
+
+svg .tick line {
+    fill: none; 
+    stroke: black; 
+    stroke-width: 1;
+    /* shape-rendering: crispEdges;  */
+}
+
+.domain { 
+    fill: none; 
+    stroke: black; 
+    stroke-width: 1; 
+    /* shape-rendering: crispEdges; */
+  } 

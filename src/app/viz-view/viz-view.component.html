@@ -13,7 +13,6 @@
         [showLines]="showLines"
         [useLogicalTime]="useLogicalTime"
         [level]="level"
-        (selectedPlayerEmitter)="onSelectPlayer($event)"
     > </app-chart>
 
     <form>
@@ -83,6 +82,13 @@
                 </select>
 
                 <button type="button" (click)="chart.saveSVG()">Save as SVG</button>
+
+                <label>
+                        <input type="checkbox" [(ngModel)]="chart.zoomYAxis" (click)="chart.toggleZoomYAxis()" name="togglezoommYaxis"/>
+                        Zoom Y Axis
+                    </label> 
+
+                <button type="button" (click)="chart.resetZoom()">Reset zoom</button>
            
             </div>
     </form>

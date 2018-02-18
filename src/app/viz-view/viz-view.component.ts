@@ -1,10 +1,8 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { EventsService } from './events.service'
+import { EventsService } from '../services/events.service'
 
 import * as negate from 'lodash.negate';
-
-
 
 @Component({
   selector: 'viz-view',
@@ -21,14 +19,14 @@ export class VizViewComponent {
     filteredDataset;
     level = "a";
     xAxis : boolean = true;
-    yAxis : boolean = true; 
+    yAxis : boolean = true;
     showLines : boolean = true;
     levels = [];
     selectedLevel : string = "all";
     change="big";
     useLogicalTime : boolean = false;
 
-    @Output() selectedPlayerEmitter = new EventEmitter(); 
+    @Output() selectedPlayerEmitter = new EventEmitter();
 
 
 
@@ -89,26 +87,25 @@ export class VizViewComponent {
     }
 
     changeLevel() {
-        console.log("**************** [vizview] changing level!");
+        // console.log("**************** [vizview] changing level!");
         if(this.selectedLevel.indexOf("shift") != -1) {
             this.useLogicalTime = true;
         } else {
             this.useLogicalTime = false;
         }
-        // console.log(this.selectedLevel); 
+        // console.log(this.selectedLevel);
         this.change="level";
         this.level = this.selectedLevel[0];
         this.showLines = true;
-      
+
         this.applyLevelFilter();
         this.applyFlagFilters();
-     
-        console.log("[Viz-view] - use logical time: ", this.useLogicalTime);
+
     }
 
     changeFilter() {
-        console.log("Changing filter!");
-        console.log(JSON.stringify(this.flags, null, 2));
+        // console.log("Changing filter!");
+        // console.log(JSON.stringify(this.flags, null, 2));
         this.change = "flags";
         this.applyLevelFilter();
         this.applyFlagFilters();
@@ -119,23 +116,23 @@ export class VizViewComponent {
     showAllEvents() {
         this.change = "flags";
         this.applyLevelFilter();
-        Object.keys(this.flags).forEach(flag => {this.flags[flag].show = true; }); 
+        Object.keys(this.flags).forEach(flag => {this.flags[flag].show = true; });
     }
 
     hideAllEvents() {
         this.change = "flags";
         this.filteredDataset = [];
-        Object.keys(this.flags).forEach(flag => {this.flags[flag].show = false; }); 
+        Object.keys(this.flags).forEach(flag => {this.flags[flag].show = false; });
     }
 
     toggleAxis() {
         this.change = "axis";
-        console.log(this.xAxis, this.yAxis);
+        // console.log(this.xAxis, this.yAxis);
     }
 
     toggleLines() {
         this.change = "lines";
-        console.log(this.showLines);
+        // console.log(this.showLines);
     }
 
     private applyLevelFilter() {
@@ -145,7 +142,7 @@ export class VizViewComponent {
             this.filteredDataset = this.originalDataset.filter(d => {
                 return d.level == this.level;
             });
-        }    
+        }
     }
 
     private applyFlagFilters() {
@@ -163,7 +160,7 @@ export class VizViewComponent {
         this.eventsService.getEvents(this.gameId).subscribe(events => {
             // console.log(events);
             if(this.gameId != '' && this.gameId != undefined && this.gameId != "none") {
-                console.log(this.gameId);
+                // console.log(this.gameId);
                 this.change = "game";
             }
             this.resetUI();
@@ -183,7 +180,7 @@ export class VizViewComponent {
         this.selectedLevel="all";
         this.useLogicalTime = false;
         Object.keys(this.flags).forEach( (flag => {
-            this.flags[flag].show = false; 
+            this.flags[flag].show = false;
         }));
 
     }
@@ -193,16 +190,11 @@ export class VizViewComponent {
         this.originalDataset.forEach(event => {
             if (event.level > maxLevel) {
                 maxLevel = event.level;
-            } 
+            }
         });
         this.levels = [];
         for(var i = 1; i<=maxLevel; i++ ){
-            this.levels[i-1] = i; 
+            this.levels[i-1] = i;
         }
     }
-
-
-    onSelectPlayer(player) {
-        this.selectedPlayerEmitter.emit(player);
-  }
 }

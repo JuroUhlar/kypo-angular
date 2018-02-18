@@ -1,5 +1,8 @@
 import { Component } from '@angular/core';
-
+import { Observable } from 'rxjs/Observable';
+import { Game } from './models/game.model'
+import { Store } from '@ngrx/store';
+import * as fromRoot from './reducers';
 
 @Component({
   selector: 'app-root',
@@ -8,28 +11,20 @@ import { Component } from '@angular/core';
 })
 
 export class AppComponent {
-  title = 'Kypo game run visualisation tool';
-  selectedGame = 'none';
-  selectedPlayer = 'none';
+  title = 'Kypo CTF visualisation';
+
+  selectedGame : Observable<Game>;
 
   // sidebar variable
   _opened: boolean = false;
 
-  onSelectDataset(game) {
-    if(game != '' && game != 'none' && game != null) {
-          // console.log("Parent component received " + game);
-          this.selectedGame = game;
-    }
-    
-    // closes sidebar
-    // this._closeSidebar();
+  constructor(private store : Store<fromRoot.State>) {
+    this.selectedGame = store.select(fromRoot.selectSelectedGame);
+
+    this.selectedGame.subscribe((value) => console.log(value));
   }
 
-  onSelectPlayer(player){
-    this.selectedPlayer = player;
-    this._opened = true;
-    console.log("[App compomennt] Selected player is ", this.selectedPlayer );
-  }
+  
 
   _toggleSidebar() {
     this._opened = !this._opened;
@@ -39,7 +34,3 @@ export class AppComponent {
     this._opened = false;
   }
 }
-
-
-
-

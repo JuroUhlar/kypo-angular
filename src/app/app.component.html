@@ -1,14 +1,14 @@
 
 
-<md-sidenav-container class="kypoviz-container">
+<mat-sidenav-container class="kypoviz-container">
 
     <!-- Menu sidebar  -->
-    <md-sidenav #sidenav class="kypoviz-sidenav" (click)="sidenav.close()" [(opened)]="_opened">
+    <mat-sidenav #sidenav class="kypoviz-sidenav" (click)="sidenav.close()" [(opened)]="_opened">
 
-        <kypo-menu (selectDataset)="onSelectDataset($event)" [selectedPlayer]="selectedPlayer">
+        <kypo-menu>
         </kypo-menu>
 
-    </md-sidenav>
+    </mat-sidenav>
 
     <!-- Rest of the page -->
     <div class="kypoviz-sidenav-content" >
@@ -25,13 +25,13 @@
             </span>
 
             <div class="kypoviz-navbar-rightside">
-                Selected game: <a (click)="sidenav.toggle()">{{selectedGame}}</a>
+                Selected game: <a (click)="sidenav.toggle()">{{ (selectedGame | async)?.name }}</a>
             </div>
         </nav>
 
         <!-- Content  -->
         <div id="content-wrapper">
-                <div *ngIf="selectedGame === 'none'">
+                <div *ngIf="(selectedGame | async) == null">
                     <h2>Welcome</h2>
                     <p>Thank you for testing this prototype visualization of a run of a KYPOlab security game. </p>
                     <p> <span style="font-weight: bold"> If you are here as a tester, please fill in your name in the text field below.</span>                If will help us identify the record of your session. </p>
@@ -49,10 +49,10 @@
                             <p>If you have any questions, or want to contact the author, write to Juraj Uhlár at <i>422160@mail.muni.cz</i>
                 </div>
 
-                <viz-view *ngIf="selectedGame != 'none'" [gameId]="selectedGame" (selectedPlayerEmitter)="onSelectPlayer($event)">
+                <viz-view [gameId]="(selectedGame| async)?.alias" (selectedPlayerEmitter)="onSelectPlayer($event)">
 
                 </viz-view>
         </div>
     </div>
 
-</md-sidenav-container>
+</mat-sidenav-container>
