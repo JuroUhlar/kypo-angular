@@ -6,7 +6,7 @@ This project was generated with [Angular CLI](https://github.com/angular/angular
 
 ## Demo
 
-Demo is available at [http://kypo-viz.surge.sh/](http://kypo-viz.surge.sh/). 
+Demo is available at [http://kypo-viz.surge.sh/](http://kypo-viz.surge.sh/). Needs refresh to properly wake up the data server and see the available datasets.
 
 ![alt text](https://image.prntscr.com/image/gQhmvp4hTqG5bji58rFHsw.png "Kypo ctf events vizualization")
 
